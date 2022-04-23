@@ -48,58 +48,9 @@ public class Java4153 {
  * StringTokenizer는 빈 문자열을 토큰으로 인식하지 않고, 결과값이 문자열이다.
  * Split는 빈 문자열을 토큰으로 인식하고, 결과 값이 문자열 배열이다.
  * StringTokonizer st = new StringTokenizer(문자열);
-       ->띄어쓰기 기준으로 문자열 분리.
+       ->" \t\n\r\t" 기준으로 문자열 분리.
  * StringTokonizer st = new StringTokenizer(문자열, 구분자);
        ->구분자를 기준으로 문자열을 분리
  * StringTokonizer st = new StringTokenizer(문자열, 구분자, true/false);
        ->구분자를 기준으로 문자열을 분리할 때 구분자도 토큰으로 넣을지(true) 구분자는 분리된 문자열 토큰에 포함 안시킬지(false=디폴트)
  */
-
-
-
-
-
-
-/*
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Scanner;
-import java.util.StringTokenizer;
-
-public class Java4153 {
-    public static void main(String[] args) throws IOException {
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-
-        while(true) {
-            StringTokenizer st = new StringTokenizer(br.readLine()," ");
-
-            int x = Integer.parseInt(st.nextToken());
-            int y = Integer.parseInt(st.nextToken());
-            int z = Integer.parseInt(st.nextToken());
-
-
-            // 0 0 0 을 입력받으면 종료
-            if(x == 0 && y == 0 && z == 0) break;
-
-
-            if((x * x + y * y) == z * z) {
-                System.out.println("right");
-            }
-            else if(x * x == (y * y + z * z)) {
-                System.out.println("right");
-            }
-            else if(y * y == (z * z + x * x)) {
-                System.out.println("right");
-            }
-            else {
-                System.out.println("wrong");
-            }
-
-        }
-
-    }}
-
-*/
