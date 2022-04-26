@@ -6,54 +6,52 @@ import java.io.InputStreamReader;
 import java.util.Comparator;
 import java.util.StringTokenizer;
 
-public class Java7568 {
+public class Java7568_2 {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
         int[] grade = new int[n];
-        int[] x = new int[n];
-        int[] y = new int[n];
-        int[] max = new int[3];
+        Human[] hm = new Human[n];
 
         for (int i = 0; i < n; i++) {
             String input = br.readLine();
             StringTokenizer st = new StringTokenizer(input, " ");
-            x[i] = Integer.parseInt(st.nextToken());
-            y[i] = Integer.parseInt(st.nextToken());
+            hm[i] = new Human(i, Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+            grade[i] = 1;
         }
-
-        for (int j = 0; j < n; j++) {
-            if (x[j] > max[1]) {
-                if (y[j] > max[2]) {
-                    max[0] = j;
-                    max[1] = x[j];
-                    max[2] = y[j];
-                }
-            } else {
-                grade[j] += 1;
-
+        Comparator<Human> comp = (o1, o2) -> {
+            int res;
+            if (o1.height < o2.height && o1.weight < o2.weight)
+                res = 1;
+            else {
+                res = 0;
             }
+            return res;
+        };
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int res = comp.compare(hm[i], hm[j]);
+                if (res > 0) {
+                    grade[i] += 1;
+                }
+            }
+            System.out.print(grade[i] + " ");
+        }
+    }
+
+    static class Human {
+        int index;
+        int weight;
+        int height;
+
+        Human(int index, int weight, int height) {
+            this.index = index;
+            this.weight = weight;
+            this.height = height;
         }
     }
 }
-
-class MyComparator implements Comparator<MyComparator> {
-    int index;
-    int weight;
-    int height;
-
-    MyComparator(int index,int weight, int height){
-        this.index = index;
-        this.weight = weight;
-        this.height = height;
-    }
-
-    @Override
-    public int compare(MyComparator o1, MyComparator o2) {
-        return 0;
-    }
-}
-
 /**
  * https://st-lab.tistory.com/243
  * Comparable
