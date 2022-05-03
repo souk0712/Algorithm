@@ -3,6 +3,8 @@ package week6;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Java11123 {
     static int totalSheep = 0;
@@ -31,7 +33,8 @@ public class Java11123 {
                 for (int j = 0; j < w; j++) {
                     if (array[i][j].equals("#"))
                         if (!visited[i][j]) {
-                            dfs(array, i, j, visited);
+                            //dfs(array, i, j, visited);
+                            bfs(array, i, j, visited);
                             totalSheep++;
                         }
                 }
@@ -40,6 +43,29 @@ public class Java11123 {
             totalSheep = 0;
         }
         System.out.println(sb);
+    }
+
+    private static void bfs(String[][] array, int i, int j, boolean[][] visited) {
+        if (visited[i][j]) return;
+        visited[i][j] = true;
+
+        Queue<int[]> que = new LinkedList<>();
+        que.offer(new int[]{i, j});
+        int[][] pos = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+        while (!que.isEmpty()) {
+            int[] poll = que.poll();
+            for (int a = 0; a < 4; a++) {
+                int x = poll[0] + pos[a][0];
+                int y = poll[1] + pos[a][1];
+
+                if (x < 0 || x >= h || y < 0 || y >= w) continue;
+                if (visited[x][y]) continue;
+                if (array[x][y].equals(".")) continue;
+
+                que.offer(new int[]{x, y});
+                visited[x][y] = true;
+            }
+        }
     }
 
     private static void dfs(String[][] array, int i, int j, boolean[][] visited) {
