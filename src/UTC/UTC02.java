@@ -9,7 +9,7 @@ public class UTC02 {
 
         int[] answer = solution(input);
         for (int i = 0; i < answer.length; i++) {
-            System.out.print(answer[i]+" ");
+            System.out.print(answer[i] + " ");
         }
     }
 
