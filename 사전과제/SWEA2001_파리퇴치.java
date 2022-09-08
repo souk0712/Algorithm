@@ -1,8 +1,6 @@
-package algo_2001;
-
 import java.util.Scanner;
 
-public class SWE_2001 {
+public class SWEA2001_파리퇴치 {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);

@@ -1,8 +1,6 @@
-package algo_1979;
-
 import java.util.Scanner;
 
-public class SWA_1979 {
+public class SWEA1979_어디에단어가들어갈수있을까 {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);

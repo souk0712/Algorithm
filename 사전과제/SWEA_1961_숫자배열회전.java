@@ -1,8 +1,6 @@
-package algo_1961;
-
 import java.util.Scanner;
 
-public class SWE_1961 {
+public class SWEA_1961_숫자배열회전 {
 	static int N;
 	static StringBuilder sb;
 
