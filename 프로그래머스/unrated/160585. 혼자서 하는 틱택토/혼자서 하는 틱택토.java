@@ -1,7 +1,7 @@
 
 class Solution {
-    static int[] dx = {-1, 0, 1, 1};    // 오른쪽위, 오른쪽, 오른쪽아래, 아래
-    static int[] dy = {1, 1, 1, 0};
+    static int[] dx = {1, 0, 1, 0};    // 오른쪽위, 오른쪽, 오른쪽아래, 아래
+    static int[] dy = {-1, 1, 1, 1};
     
     static boolean winX = false;
     static boolean winO = false;
