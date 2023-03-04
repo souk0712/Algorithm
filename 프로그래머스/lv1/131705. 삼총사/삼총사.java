@@ -4,11 +4,11 @@ class Solution {
     
     public int solution(int[] number) {
         visited = new boolean[number.length];
-        perm(number,0,0,0);
+        comb(number,0,0,0);
         return answer;
     }
     
-    public static void perm(int[] number,int start,int sum, int cnt){
+    public static void comb(int[] number,int start,int sum, int cnt){
         if(cnt == 3){
             if(sum == 0){
                 answer++;
@@ -20,7 +20,7 @@ class Solution {
         for(int i = start; i<number.length;i++){
             if(visited[i]) continue;
             visited[i] = true;
-            perm(number,i+1,sum + number[i], cnt+1);
+            comb(number,i+1,sum + number[i], cnt+1);
             visited[i] = false;
         }
     }
