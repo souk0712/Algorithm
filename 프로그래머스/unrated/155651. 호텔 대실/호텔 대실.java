@@ -21,7 +21,6 @@ public class Solution {
             check[i] = true;
             int next = times[i].next();
             for (int j = i + 1; j < times.length; j++) {
-                if (check[j]) continue;
                 if (next < times[j].start) {
                     check[j] = true;
                     next = times[j].next();
