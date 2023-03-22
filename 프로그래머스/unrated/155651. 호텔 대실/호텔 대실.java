@@ -10,7 +10,7 @@ public class Solution {
             String[] ss = s[0].split(":");
             String[] se = s[1].split(":");
             int start = Integer.parseInt(ss[0]) * 60 + Integer.parseInt(ss[1]);
-            int end = Integer.parseInt(se[0]) * 60 + Integer.parseInt(se[1]);
+            int end = Integer.parseInt(se[0]) * 60 + Integer.parseInt(se[1]) + 10;
             times[index++] = new Time(start, end);
         }
 
@@ -19,11 +19,12 @@ public class Solution {
         for (int i = 0; i < times.length; i++) {
             if (check[i]) continue;
             check[i] = true;
-            int next = times[i].next();
+            int next = times[i].end;
             for (int j = i + 1; j < times.length; j++) {
-                if (next < times[j].start) {
+                if (check[j]) continue;
+                if (next <= times[j].start) {
                     check[j] = true;
-                    next = times[j].next();
+                    next = times[j].end;
                 }
             }
             answer++;
