@@ -41,11 +41,6 @@ public class Solution {
         }
 
         @Override
-        public String toString() {
-            return "start: " + start + " end: " + end;
-        }
-
-        @Override
         public int compareTo(Time o) {
             int res = Integer.compare(start, o.start);
             if (res == 0) {
@@ -53,10 +48,6 @@ public class Solution {
             } else {
                 return res;
             }
-        }
-
-        public int next() {
-            return this.end + 9;
         }
     }
 }
