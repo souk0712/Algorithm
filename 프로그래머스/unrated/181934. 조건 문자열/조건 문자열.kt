@@ -1,14 +1,13 @@
 class Solution {
     fun solution(ineq: String, eq: String, n: Int, m: Int): Int {
-        return if(
-            when(ineq){
-            "<" -> {
-                if(eq == "=") n <= m else n < m                
-            }
-            else -> {
-                if(eq == "=") n >= m else n > m    
-            }
-        }) 1 
-        else 0
+        return when{
+            ineq == "<" && eq == "=" -> n <= m
+            ineq == "<" && eq == "!" -> n < m
+            ineq == ">" && eq == "=" -> n >= m
+            ineq == ">" && eq == "!" -> n > m
+            else -> false
+        }.let{
+            if(it) 1 else 0
+        }
     }
 }
