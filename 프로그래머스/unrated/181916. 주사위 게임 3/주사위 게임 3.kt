@@ -4,42 +4,46 @@ class Solution {
     fun solution(a: Int, b: Int, c: Int, d: Int): Int {
         var answer: Int = 0
         val list = listOf(a, b, c, d)
-        val set = list.distinct()
-        val max = list.maxOrNull() ?: 0
-        val count = IntArray(max + 1)
-
+        val count = IntArray(7)
+                
         list.forEach { count[it]++ }
+        
+        val max = count.maxOrNull() ?: 0
 
-        when (set.size) {
+        when (max) {
             4 -> {
-                answer += list.minOrNull() ?: 0
+                answer += 1111 * list[0]
             }
             3 -> {
-                val p = set[0]
-                val q = set[1]
-                val r = set[2]
-
-                if (count[p] == 2) {
-                    answer += q * r
-                } else if (count[q] == 2) {
-                    answer += p * r
-                } else if (count[r] == 2) {
-                    answer += p * q
-                }
+                val p = count.indexOf(3)
+                val q = count.indexOf(1)
+                answer += (10 * p + q) * (10 * p + q)
             }
             2 -> {
-                val p = set[0]
-                val q = set[1]
-                answer += if (count[p] == 3) {
-                    (10 * p + q) * (10 * p + q)
-                } else if (count[q] == 3) {
-                    (10 * q + p) * (10 * q + p)
-                } else {
-                    (p + q) * abs(p - q)
+                var p = 0
+                var q = 0
+
+                for (i in 1..6) {
+                    if (count[i] == 2) {
+                        if (p == 0) p = i
+                        else q = i
+                    }
+                }
+
+                if (q != 0) answer = (p + q) * abs(p - q)
+                else {
+                    var r = 0
+                    for (i in 1..6) {
+                        if (count[i] == 1) {
+                            if (q == 0) q = i
+                            else r = i
+                        }
+                    }
+                    answer += q * r
                 }
             }
             1 -> {
-                answer += 1111 * list[0]
+                answer += list.minOrNull() ?: 0
             }
         }
         return answer
