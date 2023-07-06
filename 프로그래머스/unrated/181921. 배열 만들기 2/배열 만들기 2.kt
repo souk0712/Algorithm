@@ -1,21 +1,3 @@
 class Solution {
-    fun solution(l: Int, r: Int): IntArray {
-        var answer: IntArray = intArrayOf()
-        
-        for(i in l..r){
-            var check = false
-            i.toString().forEach { c ->
-                if(c != '5' && c != '0'){
-                    check = true
-                }
-            }
-            if(!check) answer += i
-        }
-        
-        if(answer.isEmpty()){
-            answer += -1
-        }
-        
-        return answer
-    }
+    fun solution(l: Int, r: Int): List<Int> = (l..r).filter { it.toString().all { c -> c == '5' || c == '0' } }.takeIf(List<Int>::isNotEmpty) ?: listOf(-1)
 }
