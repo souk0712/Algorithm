@@ -1,54 +1,47 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
 
     static int N, S, ans;
     static int[] arr;
+    static boolean[] visit;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String[] input = br.readLine().split(" ");
-        N = Integer.parseInt(input[0]);
-        S = Integer.parseInt(input[1]);
-
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        S = Integer.parseInt(st.nextToken());
         arr = new int[N];
-        String[] arrInput = br.readLine().split(" ");
+        visit = new boolean[N];
+        ans = 0;
 
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = Integer.parseInt(arrInput[i]);
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        ans = 0;
-        sumFunction(0, 0);
+        for (int i = 1; i <= N; i++) {
+            sum(0, 0, i, 0);
+        }
+
         System.out.println(ans);
     }
 
-    private static void sumFunction(int flag, int cnt) {
-        if (cnt == N) {
-            // 공집합인 경우
-            if (flag == 0) return;
-            int sum = 0;
-
-            for (int i = 0; i < N; i++) {
-                // i번째 비트가 1이라면 arr[i]값을 sum에 더하기
-                if (((1 << i) & flag) > 0) {
-                    sum += arr[i];
-                }
-            }
-            // 합이 S가 된다면 개수 추가
+    private static void sum(int start, int n, int r, int sum) {
+        if (n == r) {
             if (sum == S) {
                 ans++;
             }
-
             return;
         }
-        // cnt번째 비트를 선택하지 않는 경우
-        sumFunction(flag, cnt + 1);
 
-        // cnt번째 비트를 선택한 경우
-        flag = (1 << cnt) | flag;
-        sumFunction(flag, cnt + 1);
+        for (int i = start; i < N; i++) {
+            visit[i] = true;
+            sum(i + 1, n + 1, r, sum + arr[i]);
+            visit[i] = false;
+        }
     }
 }
