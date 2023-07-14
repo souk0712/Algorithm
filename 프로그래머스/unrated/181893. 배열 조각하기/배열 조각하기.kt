@@ -1,14 +1,13 @@
 class Solution {
     fun solution(arr: IntArray, query: IntArray): IntArray {
-        var answer = arr.clone()
-        query.forEachIndexed { index, i ->
-            val size = answer.size
-            answer = if(index % 2 == 0){
-                answer.take(i + 1).toIntArray()
-            } else {
-                answer.takeLast(size - i).toIntArray()
+        val res = query.withIndex()
+            .fold(arr) { acc, (i, e) ->
+                if (i % 2 == 0) {
+                    acc.copyOfRange(0, e + 1)
+                } else {
+                    acc.copyOfRange(e, acc.size)
+                }
             }
-        }
-        return answer
+        return if (res.isEmpty()) intArrayOf(-1) else res
     }
 }
