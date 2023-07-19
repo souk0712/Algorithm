@@ -1,5 +1,5 @@
 class Solution {
     fun solution(strArr: Array<String>): Array<String> {
-        return strArr.filterNot { it.contains("ad") }.toTypedArray()
-    }
+        return strArr.filterNot { "ad" in it }.toTypedArray()
+    }   
 }
