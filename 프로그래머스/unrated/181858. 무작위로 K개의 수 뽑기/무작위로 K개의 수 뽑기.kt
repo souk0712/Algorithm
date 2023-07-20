@@ -1,6 +1,12 @@
 class Solution {
     fun solution(arr: IntArray, k: Int): IntArray {
-        val new = arr.distinct()
-        return (0 until k).map { if (it >= new.size) -1 else new[it] }.toIntArray()
+        val uniqueArr = arr.toSet().toList()
+        var result = uniqueArr.take(k).toIntArray()
+        if (result.size < k) {
+            repeat(k - result.size) {
+                result += -1
+            }
+        }
+        return result
     }
 }
