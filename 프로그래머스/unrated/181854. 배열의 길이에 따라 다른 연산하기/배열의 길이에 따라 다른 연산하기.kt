@@ -1,6 +1,5 @@
 class Solution {
     fun solution(arr: IntArray, n: Int): IntArray {
-        return (if (arr.size % 2 == 1) arr.mapIndexed { index, i -> if (index % 2 == 0) i + n else i }
-        else arr.mapIndexed { index, i -> if (index % 2 == 1) i + n else i }).toIntArray()
+        return arr.indices.map { arr[it] + if (it % 2 == if (arr.size % 2 == 0) 1 else 0) n else 0 }.toIntArray()
     }
 }
