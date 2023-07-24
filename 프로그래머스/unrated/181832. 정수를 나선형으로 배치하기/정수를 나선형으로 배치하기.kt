@@ -11,16 +11,13 @@ class Solution {
         answer[i][j] = num++
 
         while (true) {
+            if (num == n * n + 1)
+                break
             val x = i + dx[d]
             val y = j + dy[d]
             if (x < 0 || y < 0 || x >= n || y >= n || answer[x][y] != 0) {
                 d = (d + 1) % 4
-                val xx = i + dx[d]
-                val yy = j + dy[d]
-                 if (xx < 0 || yy < 0 || xx >= n || yy >= n || answer[xx][yy] != 0)
-                    break   
-                else
-                    continue
+                continue
             }
             answer[x][y] = num++
             i = x
