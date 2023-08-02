@@ -56,7 +56,7 @@ public class Main {
                     total--;
 
                 if (total == 0) {
-                    ans = Math.min(ans, day);
+                    ans = day;
                 }
 
                 for (int k = 0; k < dx.length; k++) {
