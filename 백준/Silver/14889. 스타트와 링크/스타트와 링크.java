@@ -5,64 +5,75 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    static int[] start;
-    static int[][] power;
-    static boolean[] visited;
-    static int N;
-    static int min;
+    static int N, min;
+    static int[][] map;
+    static int[] start, link;
+    static boolean[] visit;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        power = new int[N + 1][N + 1];
-        start = new int[N / 2];
-        visited = new boolean[N + 1];
         min = Integer.MAX_VALUE;
+        map = new int[N + 1][N + 1];
+        start = new int[N / 2];
+        link = new int[N / 2];
+        visit = new boolean[N + 1];
 
         for (int i = 1; i <= N; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             for (int j = 1; j <= N; j++) {
-                power[i][j] = Integer.parseInt(st.nextToken());
+                map[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-        comb(0, 1);
+
+        pickStart(1, 0);
 
         System.out.println(min);
     }
 
-    private static void comb(int cnt, int index) {
+    // start 팀 배정
+    private static void pickStart(int st, int cnt) {
         if (cnt == N / 2) {
-            int[] link = new int[N / 2];
-            int startSum = 0;
-            int linkSum = 0;
-
-            for (int i = 0; i < N / 2; i++) {
-                for (int j = i + 1; j < N / 2; j++) {
-                    startSum += power[start[i]][start[j]] + power[start[j]][start[i]];
-                }
+            for (int j = 1, index = 0; j < visit.length; j++) {
+                // link 팀 배정
+                if (visit[j]) continue;
+                link[index++] = j;
             }
-
-            for (int i = 1, j = 0; i <= N; i++) {
-                if (!visited[i]) {
-                    link[j++] = i;
-                }
-            }
-
-            for (int i = 0; i < N / 2; i++) {
-                for (int j = i + 1; j < N / 2; j++) {
-                    linkSum += power[link[i]][link[j]] + power[link[j]][link[i]];
-                }
-            }
-
-            min = Math.min(min, Math.abs(linkSum - startSum));
+            calculateScore();
             return;
         }
 
-        for (int i = index; i <= N; i++) {
-            visited[i] = true;
+        for (int i = st; i <= N; i++) {
+            visit[i] = true;
             start[cnt] = i;
-            comb(cnt + 1, i + 1);
-            visited[i] = false;
+            pickStart(i + 1, cnt + 1);
+            visit[i] = false;
         }
+    }
+
+    // 팀 배정대로 점수 계산
+    private static void calculateScore() {
+
+        // 1 2 3    //4 5 6
+        // 12,13,23,21,31,32
+        int scoreS = 0;
+        //start팀 점수 계산
+        for (int i = 0; i < start.length; i++) {
+            for (int j = i + 1; j < start.length; j++) {
+                scoreS += map[start[i]][start[j]];
+                scoreS += map[start[j]][start[i]];
+            }
+        }
+
+        int scoreL = 0;
+        //link팀 점수 계산
+        for (int i = 0; i < link.length; i++) {
+            for (int j = i + 1; j < link.length; j++) {
+                scoreL += map[link[i]][link[j]];
+                scoreL += map[link[j]][link[i]];
+            }
+        }
+
+        min = Math.min(min, Math.abs(scoreL - scoreS));
     }
 }
