@@ -1,10 +1,10 @@
-# [Gold V] 꿀 따기 - 21758 
+# [Gold V] 꿀 따기 - 21758
 
-[문제 링크](https://www.acmicpc.net/problem/21758) 
+[문제 링크](https://www.acmicpc.net/problem/21758)
 
 ### 성능 요약
 
-메모리: 12892 KB, 시간: 80 ms
+메모리: 25772 KB, 시간: 272 ms
 
 ### 분류
 
@@ -39,13 +39,12 @@
 
 <p>장소들의 꿀 양을 입력으로 받아 벌들이 딸 수 있는 가능한 최대의 꿀의 양을 계산하는 프로그램을 작성하라.</p>
 
-### 입력 
+### 입력
 
  <p>첫 번째 줄에 장소의 수 <mjx-container class="MathJax" jax="CHTML" style="font-size: 109%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>N</mi></math></mjx-assistive-mml><span aria-hidden="true" class="no-mathjax mjx-copytext">$N$</span></mjx-container>이 주어진다.</p>
 
 <p>다음 줄에 왼쪽부터 각 장소에서 꿀을 딸 수 있는 양이 공백 하나씩을 사이에 두고 주어진다.</p>
 
-### 출력 
+### 출력
 
  <p>첫 번째 줄에 가능한 최대의 꿀의 양을 출력한다.</p>
-

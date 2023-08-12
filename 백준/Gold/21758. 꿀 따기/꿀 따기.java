@@ -7,14 +7,13 @@ public class Main {
 
     static int N, max;
     static int[] flower;
-    static int[] pickIdx;
-    static boolean[] visit;
-    static int[] dy = {-1, 1};  // 왼, 오
+    static int[] dp;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
         flower = new int[N];
+        dp = new int[N];
         max = Integer.MIN_VALUE;
 
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -22,51 +21,28 @@ public class Main {
             flower[i] = Integer.parseInt(st.nextToken());
         }
 
-        // 꿀통 설정
-        for (int i = 0; i < N; i++) {
-            pickIdx = new int[2];
-            visit = new boolean[N];
-            visit[i] = true;
-            comb(0, 0, i);
+        dp[0] = flower[0];
+        for (int j = 1; j < N; j++) {
+            dp[j] = dp[j - 1] + flower[j];
+        }
+
+        // 벌-벌-꿀
+        for (int i = 1; i < N - 1; i++) {
+            int bbh1 = dp[N - 1] - flower[0] - flower[i];
+            int bbh2 = dp[N - 1] - dp[i];
+            max = Math.max(bbh1 + bbh2, max);
+
+            // 벌-꿀-벌
+            int bhb1 = dp[i] - flower[0];
+            int bhb2 = dp[N - 2] - dp[i - 1];
+            max = Math.max(bhb1 + bhb2, max);
+
+            // 꿀-벌-벌
+            int hbb1 = dp[i] - flower[i];
+            int hbb2 = dp[N - 1] - flower[N - 1] - flower[i];
+            max = Math.max(hbb1 + hbb2, max);
         }
 
         System.out.println(max);
-    }
-
-    private static void comb(int start, int cnt, int honeyIdx) {
-        if (cnt == 2) {
-            int sum = 0;
-
-            int com = pickIdx[1];
-            for (int k = 0; k < pickIdx.length; k++) {
-                int p = pickIdx[k];
-
-                if (p > honeyIdx) {
-                    // 왼쪽으로 이동
-                    for (int i = p - 1; i >= honeyIdx; i--) {
-                        if (com != i)
-                            sum += flower[i];
-                    }
-                } else {
-                    // 오른쪽으로 이동
-                    for (int i = p + 1; i <= honeyIdx; i++) {
-                        if (com != i)
-                            sum += flower[i];
-                    }
-                }
-                com = p;
-            }
-            max = Math.max(max, sum);
-            return;
-        }
-
-        for (int i = start; i < N; i++) {
-            if (visit[i]) continue;
-
-            visit[i] = true;
-            pickIdx[cnt] = i;
-            comb(i + 1, cnt + 1, honeyIdx);
-            visit[i] = false;
-        }
     }
 }
