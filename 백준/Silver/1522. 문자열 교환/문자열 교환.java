@@ -12,12 +12,30 @@ public class Main {
             if (input.charAt(i) == 'a') a_len++;
         }
 
-        for (int i = 0; i < input.length(); i++) {
-            int b_cnt = 0;
-            for (int j = i; j < a_len + i; j++) {
-                if (input.charAt(j % input.length()) == 'b') b_cnt++;
+        int initLen = input.length();
+
+        int left = 0, right = 0;
+        int b_len = 0;
+        int len = 1;
+
+        if (input.charAt(0) == 'b') {
+            b_len++;
+        }
+
+        while (left < initLen) {
+            if (len <= a_len) {
+                char r = input.charAt(++right % initLen);
+                if (r == 'b') b_len++;
+                len++;
+            } else {
+                char l = input.charAt(left++);
+                if (l == 'b') b_len--;
+                len--;
             }
-            min = Math.min(min, b_cnt);
+
+            if (len == a_len) {
+                min = Math.min(min, b_len);
+            }
         }
 
         System.out.println(min);
