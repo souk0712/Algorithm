@@ -6,39 +6,38 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    static int N;
-    static long[] arr;
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(br.readLine());
+        int N = Integer.parseInt(br.readLine());
         StringTokenizer st = new StringTokenizer(br.readLine());
-        arr = new long[N];
-
+        long[] arr = new long[N];
         for (int i = 0; i < N; i++) {
-            long input = Long.parseLong(st.nextToken());
-            arr[i] = input;
+            arr[i] = Long.parseLong(st.nextToken());
         }
 
         Arrays.sort(arr);
 
+        long lValue = 0, rValue = 0;
+
         int left = 0, right = N - 1;
-        long min = Long.MAX_VALUE;
-        int ml = 0, mr = 0;
+        long min = Integer.MAX_VALUE;
 
         while (left < right) {
-            long sum = arr[left] + arr[right];
+            long diff = arr[left] + arr[right];
 
-            if (min > Math.abs(sum)) {
-                min = Math.abs(sum);
-                ml = left;
-                mr = right;
+            if (min > Math.abs(diff)) {
+                min = Math.abs(diff);
+                lValue = arr[left];
+                rValue = arr[right];
             }
 
-            if (sum >= 0) right--;
-            else left++;
+            if (diff <= 0) {
+                left++;
+            } else {
+                right--;
+            }
         }
 
-        System.out.println(arr[ml] + " " + arr[mr]);
+        System.out.println(lValue + " " + rValue);
     }
 }
