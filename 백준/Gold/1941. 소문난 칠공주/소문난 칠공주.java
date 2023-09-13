@@ -1,85 +1,87 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Queue;
 
+// 0 1 2 3 4
+// 5 6 7 8 9
+// 10 11 12 13 14
+// 15 16 17 18 19
+// 20 21 22 23 24
+
 public class Main {
-    static int N = 5;
-    static char[][] site;
-    static int[] selected;
-    static int[] dx = {0, -1, 0, 1};
-    static int[] dy = {1, 0, -1, 0};
-    static int answer;
 
-    public static void main(String[] args) throws IOException {
+    static final int N = 5;
+    static int ans;
+    static char[][] map;
+    static boolean[] visit;
+    static int[] pick;
+    static int[] dx = {-1, 0, 1, 0};
+    static int[] dy = {0, -1, 0, 1};
+
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        site = new char[N][N];
-        selected = new int[7];
-        answer = 0;
-
+        map = new char[N][N];
+        pick = new int[7];
+        visit = new boolean[25];
+        ans = 0;
         for (int i = 0; i < N; i++) {
-            site[i] = br.readLine().toCharArray();
+            String str = br.readLine();
+            for (int j = 0; j < N; j++) {
+                map[i][j] = str.charAt(j);
+            }
         }
 
         comb(0, 0);
-        System.out.println(answer);
+
+        System.out.println(ans);
     }
 
-    private static void comb(int cnt, int start) {
+    private static void comb(int start, int cnt) {
         if (cnt == 7) {
-            if (bfs(selected)) {
-                answer += 1;
+            if (bfs()) {
+                ans++;
             }
             return;
         }
+
         for (int i = start; i < 25; i++) {
-            selected[cnt] = i;
-            comb(cnt + 1, i + 1);
+            if (visit[i]) continue;
+            visit[i] = true;
+            pick[cnt] = i;
+            comb(i + 1, cnt + 1);
+            visit[i] = false;
         }
     }
 
-    private static int getX(int n) {
-        return n / 5;
-    }
-
-    private static int getY(int n) {
-        return n % 5;
-    }
-
-    private static boolean bfs(int[] selected) {
+    private static boolean bfs() {
         Queue<Integer> q = new LinkedList<>();
-        int sCnt = 0;
-        int yCnt = 0;
-        boolean[] visited = new boolean[7];
-        q.add(selected[0]);
-        visited[0] = true;
-        if (site[getX(selected[0])][getY(selected[0])] == 'S') sCnt++;
-        else yCnt++;
+        boolean[] check = new boolean[25];
+        q.offer(pick[0]);
+
+        int cnt = 1, s = 0;
         while (!q.isEmpty()) {
             int cur = q.poll();
-            int x = getX(cur);
-            int y = getY(cur);
-            for (int d = 0; d < dx.length; d++) {
-                int nx = x + dx[d];
-                int ny = y + dy[d];
-                if (nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
-                for (int i = 1; i < 7; i++) {
-                    if (visited[i]) continue;
-                    int mx = getX(selected[i]);
-                    int my = getY(selected[i]);
-                    if (mx == nx && my == ny) {
-                        if (site[mx][my] == 'S') {
-                            sCnt++;
-                        } else yCnt++;
-                        q.add(selected[i]);
-                        visited[i] = true;
-                    }
-                    if (yCnt >= 4) return false;
-                }
+            int x = cur / N;
+            int y = cur % N;
+            if (map[x][y] == 'S') s++;
+            check[cur] = true;
+
+            for (int k = 0; k < dx.length; k++) {
+                int mx = x + dx[k];
+                int my = y + dy[k];
+                int n = mx * N + my;
+
+                if (mx < 0 || my < 0 || mx >= N || my >= N) continue;
+                if (!visit[n] || check[n]) continue;
+
+                cnt++;
+                check[n] = true;
+                q.offer(n);
             }
         }
-        if (sCnt + yCnt == 7) return true;
-        return false;
+
+        // 뽑힌 자리가 이어져있는지 && 뽑힌 자리의 S가 4이상인지
+        return cnt == 7 && s >= 4;
     }
 }
