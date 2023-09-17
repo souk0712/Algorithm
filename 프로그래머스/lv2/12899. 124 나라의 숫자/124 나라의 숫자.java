@@ -9,14 +9,8 @@ class Solution {
         StringBuilder sb = new StringBuilder();
         
         while(n > 0){
-            int tmp = n % 3;
-            n /= 3;
-            
-            if(tmp == 0){
-                n--;
-            }
-            
-            sb.insert(0, arr[tmp]);
+            sb.insert(0, arr[n % 3]);
+            n = (n - 1) / 3;
         }
         
         return sb.toString();
