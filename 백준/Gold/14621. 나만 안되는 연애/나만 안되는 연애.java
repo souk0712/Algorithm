@@ -1,100 +1,93 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
     static int N, M;
-    static University[] universities;
+    static char[] gender;
+    static int[] parent;
+    static ArrayList<Edge> list;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        universities = new University[N + 1];
-        PriorityQueue<Edge> pq = new PriorityQueue<>();
-
+        gender = new char[N + 1];
+        parent = new int[N + 1];
+        list = new ArrayList<>();
         st = new StringTokenizer(br.readLine());
         for (int i = 1; i <= N; i++) {
-            String gender = st.nextToken();
-            if ("M".equals(gender)) {
-                universities[i] = new University(i, 0, i);
-            } else if ("W".equals(gender)) {
-                universities[i] = new University(i, 1, i);
-            }
+            gender[i] = st.nextToken().charAt(0);
+        }
+        for (int i = 1; i <= N; i++) {
+            parent[i] = i;
         }
 
-        for (int i = 0; i < M; i++) {
+        for (int i = 1; i <= M; i++) {
             st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            int d = Integer.parseInt(st.nextToken());
-            pq.offer(new Edge(u, v, d));
+            int to = Integer.parseInt(st.nextToken());
+            int from = Integer.parseInt(st.nextToken());
+            int cost = Integer.parseInt(st.nextToken());
+            list.add(new Edge(to, from, cost));
         }
 
-        int ans = kruskal(pq);
-        System.out.println(isCheckAllPath() ? ans : -1);
+        System.out.println(kruskal());
     }
 
-    private static boolean isCheckAllPath() {
-        int compareParent = find(universities[1].parent);
-        for (int i = 2; i < universities.length; i++) {
-            int universityParent = find(universities[i].parent);
-            if (compareParent != universityParent) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static int kruskal(PriorityQueue<Edge> pq) {
+    private static int kruskal() {
+        PriorityQueue<Edge> pq = new PriorityQueue<>(list);
         int sum = 0;
         while (!pq.isEmpty()) {
             Edge cur = pq.poll();
-            if (universities[cur.v].gender == universities[cur.u].gender) continue;
-            if (find(cur.u) == find(cur.v)) continue;
-            union(cur.u, cur.v);
-            sum += cur.d;
+            if (find(cur.to) == find(cur.from) || gender[cur.to] == gender[cur.from]) continue;
+            union(cur.to, cur.from);
+            sum += cur.cost;
         }
-        return sum;
+
+        boolean check = true;
+        for (int i = 1; i < parent.length - 1; i++) {
+            if (find(i) != find(i + 1)) {
+                check = false;
+                break;
+            }
+        }
+
+        if (check) {
+            return sum;
+        }
+        return -1;
     }
 
-    public static void union(int a, int b) {
+    static void union(int a, int b) {
         int aa = find(a);
         int bb = find(b);
         if (aa == bb) return;
-        if (aa < bb) universities[bb].parent = aa;
-        else universities[aa].parent = bb;
+        if (aa < bb) parent[bb] = aa;
+        else parent[aa] = bb;
     }
 
-    public static int find(int x) {
-        if (universities[x].parent == x) return x;
-        return universities[x].parent = find(universities[x].parent);
+    private static int find(int a) {
+        if (a == parent[a]) return a;
+        return parent[a] = find(parent[a]);
     }
 
-    public static class University {
-        int index, gender, parent;  // 0:M, 1:W
+    static class Edge implements Comparable<Edge> {
+        int to, from, cost;
 
-        University(int index, int gender, int parent) {
-            this.index = index;
-            this.gender = gender;
-            this.parent = parent;
-        }
-    }
-
-    public static class Edge implements Comparable<Edge> {
-        int u, v, d;
-
-        Edge(int u, int v, int d) {
-            this.u = u;
-            this.v = v;
-            this.d = d;
+        Edge(int to, int from, int cost) {
+            this.to = to;
+            this.from = from;
+            this.cost = cost;
         }
 
         @Override
         public int compareTo(Edge o) {
-            return Integer.compare(d, o.d);
+            return Integer.compare(cost, o.cost);
         }
     }
 }
