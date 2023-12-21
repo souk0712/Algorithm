@@ -1,20 +1,16 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
     static int N, M, K;
     static int[] parent;
-    static Map<Integer, Integer> machine;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        machine = new HashMap<>();
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
@@ -23,7 +19,7 @@ public class Main {
         for (int i = 1; i <= N; i++) parent[i] = i;
         for (int i = 0; i < K; i++) {
             int m = Integer.parseInt(st.nextToken());
-            machine.put(m, m);
+            parent[m] = -1;
         }
 
         PriorityQueue<Node> pq = new PriorityQueue<>();
@@ -43,36 +39,25 @@ public class Main {
         while (!pq.isEmpty()) {
             Node cur = pq.poll();
             if (find(cur.u) == find(cur.v)) continue;
-            if (union(cur.u, cur.v)) {
-                sum += cur.w;
-            }
+            union(cur.u, cur.v);
+            sum += cur.w;
         }
         return sum;
     }
 
     static int find(int x) {
+        if (parent[x] == -1) return -1;
         if (parent[x] == x) return x;
         return parent[x] = find(parent[x]);
     }
 
-    static boolean union(int x, int y) {
+    static void union(int x, int y) {
         int xx = find(x);
         int yy = find(y);
-        if (xx == yy) return false;
-        if (machine.containsKey(xx) && machine.containsKey(yy)) {
-            return false;
-        } else {
-            if (machine.containsKey(xx)) {
-                parent[yy] = xx;
-            } else if (machine.containsKey(yy)) {
-                parent[xx] = yy;
-            } else {
-                if (xx > yy) parent[xx] = yy;
-                else parent[yy] = xx;
-            }
-        }
+        if (xx == yy) return;
 
-        return true;
+        if (xx > yy) parent[xx] = yy;
+        else parent[yy] = xx;
     }
 
     static class Node implements Comparable<Node> {
