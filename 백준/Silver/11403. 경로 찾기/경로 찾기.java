@@ -1,45 +1,50 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Main {
 
-    static int N;
-    static int[][] map;
+    static int[][] res;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(br.readLine());
-        map = new int[N][N];
-        StringTokenizer st;
+        int N = Integer.parseInt(br.readLine());
+        res = new int[N][N];
+        ArrayList<Integer>[] list = new ArrayList[N];
+        for (int i = 0; i < N; i++) list[i] = new ArrayList<>();
         for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
+            StringTokenizer st = new StringTokenizer(br.readLine());
             for (int j = 0; j < N; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-            }
-        }
-        // k 거쳐가는 노드
-        for (int k = 0; k < N; k++) {
-            // i 출발 노드
-            for (int i = 0; i < N; i++) {
-                // j 도착 노드
-                for (int j = 0; j < N; j++) {
-                    // (i, k) -> (k, j) -> (k, i) 방향 그래프에서 다른 간선과 노드를 통해 해당 노드로 이동이 가능한가를 판별
-                    if (map[i][k] == 1 && map[k][j] == 1) {
-                        map[i][j] = 1;
-                    }
+                int isPath = Integer.parseInt(st.nextToken());
+                if (isPath == 1) {
+                    list[i].add(j);
                 }
             }
         }
 
-        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                sb.append(map[i][j]).append(" ");
+            boolean[] visit = new boolean[N];
+            dfs(list, i, i, visit);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int[] i : res) {
+            for (int ii : i) {
+                sb.append(ii).append(" ");
             }
             sb.append("\n");
         }
-
         System.out.println(sb);
+    }
+
+    static void dfs(ArrayList<Integer>[] list, int x, int y, boolean[] visit) {
+        for (int j = 0; j < list[y].size(); j++) {
+            int n = list[y].get(j);
+            if (visit[n]) continue;
+            visit[n] = true;
+            res[x][n] = 1;
+            dfs(list, x, n, visit);
+        }
     }
 }
