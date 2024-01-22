@@ -7,7 +7,7 @@ public class Main {
     static int N, K, state;
     static int[] belt;
     static boolean[] visit;
-    static ArrayList<String> robots;   // 올라가 있는 index
+    static ArrayList<Integer> robots;   // 올라가 있는 index
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -40,7 +40,7 @@ public class Main {
 
     private static void putRobot() {
         if (belt[0] != 0) {
-            robots.add(String.valueOf(0));
+            robots.add(0);
             visit[0] = true;
             if (--belt[0] == 0) state++;
         }
@@ -49,17 +49,16 @@ public class Main {
     private static void moveRobot() {
         ArrayList<Integer> removeIndex = new ArrayList<>();
         for (int i = 0; i < robots.size(); i++) {
-            int current = Integer.parseInt(robots.get(i));
-            int next = current + 1;
+            int next = robots.get(i) + 1;
             if (visit[next] || belt[next] <= 0) continue;
-            visit[current] = false;
+            visit[robots.get(i)] = false;
             if (next == N - 1) {
                 removeIndex.add(i);
                 if (--belt[next] == 0) state++;
                 continue;
             }
             visit[next] = true;
-            robots.set(i, Integer.toString(next));
+            robots.set(i, next);
             if (--belt[next] == 0) state++;
         }
         for (int i = removeIndex.size() - 1; i >= 0; i--) {
@@ -75,13 +74,12 @@ public class Main {
 
         ArrayList<Integer> removeIndex = new ArrayList<>();
         for (int i = 0; i < robots.size(); i++) {
-            int current = Integer.parseInt(robots.get(i));
-            int pos = current + 1;
-            visit[current] = false;
+            int pos = robots.get(i) + 1;
+            visit[robots.get(i)] = false;
             if (pos == N - 1) {
                 removeIndex.add(i);
             } else {
-                robots.set(i, Integer.toString(pos));
+                robots.set(i, pos);
                 visit[pos] = true;
             }
         }
