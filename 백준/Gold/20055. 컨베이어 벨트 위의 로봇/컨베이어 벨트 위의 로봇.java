@@ -1,13 +1,12 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Main {
+    
     static int N, K, state;
     static int[] belt;
     static boolean[] visit;
-    static ArrayList<Integer> robots;   // 올라가 있는 index
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -16,7 +15,6 @@ public class Main {
         K = Integer.parseInt(st.nextToken());
         belt = new int[N * 2];
         visit = new boolean[2 * N];
-        robots = new ArrayList<>();
         state = 0;
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < 2 * N; i++) {
@@ -40,29 +38,23 @@ public class Main {
 
     private static void putRobot() {
         if (belt[0] != 0) {
-            robots.add(0);
             visit[0] = true;
             if (--belt[0] == 0) state++;
         }
     }
 
     private static void moveRobot() {
-        ArrayList<Integer> removeIndex = new ArrayList<>();
-        for (int i = 0; i < robots.size(); i++) {
-            int next = robots.get(i) + 1;
+        for (int i = N - 1; i >= 0; i--) {
+            if (!visit[i]) continue;
+            int next = i + 1;
             if (visit[next] || belt[next] <= 0) continue;
-            visit[robots.get(i)] = false;
+            visit[i] = false;
             if (next == N - 1) {
-                removeIndex.add(i);
                 if (--belt[next] == 0) state++;
                 continue;
             }
             visit[next] = true;
-            robots.set(i, next);
             if (--belt[next] == 0) state++;
-        }
-        for (int i = removeIndex.size() - 1; i >= 0; i--) {
-            robots.remove(removeIndex.get(i).intValue());
         }
     }
 
@@ -72,20 +64,13 @@ public class Main {
             res[(i + 1) % (2 * N)] = belt[i];
         }
 
-        ArrayList<Integer> removeIndex = new ArrayList<>();
-        for (int i = 0; i < robots.size(); i++) {
-            int pos = robots.get(i) + 1;
-            visit[robots.get(i)] = false;
-            if (pos == N - 1) {
-                removeIndex.add(i);
-            } else {
-                robots.set(i, pos);
+        for (int i = N - 1; i >= 0; i--) {
+            if (!visit[i]) continue;
+            int pos = i + 1;
+            visit[i] = false;
+            if (pos != N - 1) {
                 visit[pos] = true;
             }
-        }
-
-        for (int i = removeIndex.size() - 1; i >= 0; i--) {
-            robots.remove(removeIndex.get(i).intValue());
         }
         return res;
     }
