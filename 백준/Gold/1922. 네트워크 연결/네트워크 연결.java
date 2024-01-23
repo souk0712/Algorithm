@@ -1,74 +1,66 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
 
     static int N, M;
-    static int[] parent;
+    static ArrayList<Node>[] list;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
         M = Integer.parseInt(br.readLine());
-        PriorityQueue<Node> pq = new PriorityQueue<Node>();
-        parent = new int[N + 1];
-        for (int i = 1; i <= N; i++) parent[i] = i;
-        StringTokenizer st;
-        for (int i = 0; i < M; i++) {
-            st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            int c = Integer.parseInt(st.nextToken());
+        list = new ArrayList[N + 1];
+        for (int i = 1; i <= N; i++) list[i] = new ArrayList<Node>();
 
-            pq.offer(new Node(a, b, c));
+        for (int i = 0; i < M; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int to = Integer.parseInt(st.nextToken());
+            int from = Integer.parseInt(st.nextToken());
+            int cost = Integer.parseInt(st.nextToken());
+            list[to].add(new Node(from, cost));
+            list[from].add(new Node(to, cost));
         }
 
-        System.out.println(kruskal(pq));
+        System.out.println(prim(1));
     }
 
-    private static int kruskal(PriorityQueue<Node> pq) {
-        int res = 0;
+    private static long prim(int start) {
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        boolean[] visit = new boolean[N + 1];
+        pq.offer(new Node(start, 0));
+
+        long sum = 0;
         while (!pq.isEmpty()) {
             Node cur = pq.poll();
-            if (find(cur.a) == find(cur.b)) continue;
-            union(cur.a, cur.b);
-            res += cur.c;
+
+            if (visit[cur.next]) continue;
+            visit[cur.next] = true;
+            sum += cur.cost;
+
+            for (int i = 0; i < list[cur.next].size(); i++) {
+                Node n = list[cur.next].get(i);
+                if (visit[n.next]) continue;
+                pq.offer(n);
+            }
         }
-        return res;
+        return sum;
     }
 
-    private static void union(int a, int b) {
-        int aa = find(a);
-        int bb = find(b);
+    static class Node implements Comparable<Node> {
+        int next, cost;
 
-        if (aa == bb) return;
-        if (aa > bb) {
-            parent[aa] = bb;
-        } else {
-            parent[bb] = aa;
-        }
-    }
-
-    private static int find(int a) {
-        if (parent[a] == a) return a;
-        return parent[a] = find(parent[a]);
-    }
-
-
-    public static class Node implements Comparable<Node> {
-        int a, b, c;
-
-        Node(int a, int b, int c) {
-            this.a = a;
-            this.b = b;
-            this.c = c;
+        Node(int next, int cost) {
+            this.next = next;
+            this.cost = cost;
         }
 
         @Override
         public int compareTo(Node o) {
-            return Integer.compare(c, o.c);
+            return Integer.compare(cost, o.cost);
         }
     }
 }
