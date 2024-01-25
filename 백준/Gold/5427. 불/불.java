@@ -5,98 +5,103 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-
-    static int W, H;
-    static char[][] map;
-    static int x, y;
-    static Queue<Point> fires, person;
-    static boolean[][] visit;
+    
+    static int w, h;
+    static char map[][];
+    static Queue<Point> fire;
+    static int dx[] = {-1,1,0,0};
+    static int dy[] = {0,0,-1,1};
+    static boolean visit[][];
     static StringBuilder sb;
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
-
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine());
+        StringTokenizer stz;
         sb = new StringBuilder();
-        for (int t = 0; t < T; t++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            W = Integer.parseInt(st.nextToken());
-            H = Integer.parseInt(st.nextToken());
-            map = new char[H][W];
-            fires = new LinkedList<>();
-            person = new LinkedList<>();
-            visit = new boolean[H][W];
-
-            for (int i = 0; i < H; i++) {
-                String str = br.readLine();
-                for (int j = 0; j < W; j++) {
-                    map[i][j] = str.charAt(j);
-                    if (map[i][j] == '@') {
+        int tc = Integer.parseInt(br.readLine());
+        int x = 0, y = 0;
+        
+        for(int t = 0; t < tc; t++) {
+            stz = new StringTokenizer(br.readLine());
+            w = Integer.parseInt(stz.nextToken());
+            h = Integer.parseInt(stz.nextToken());
+            map = new char[h][w];
+            fire = new LinkedList<>();
+            
+            for(int i = 0; i < h; i++) {
+                String line = br.readLine();
+                for(int j = 0; j < w; j++) {
+                    map[i][j] = line.charAt(j);
+                    if(map[i][j] == '@') {
                         x = i;
                         y = j;
-                    } else if (map[i][j] == '*') {
-                        fires.offer(new Point(i, j));
                     }
+                    else if(map[i][j] == '*')
+                        fire.add(new Point(i, j));
                 }
             }
-            escape();
+            escape(x, y);
         }
-        System.out.println(sb);
+        System.out.println(sb.toString());
     }
-
-    private static void escape() {
-        int time = 0;
-        person.offer(new Point(x, y));
-        visit[x][y] = true;
-
-        while (!person.isEmpty()) {
-            burn();
-            time++;
-            int size = person.size();
-            for (int s = 0; s < size; s++) {
-                Point cur = person.poll();
-                for (int k = 0; k < dx.length; k++) {
-                    int mx = cur.x + dx[k];
-                    int my = cur.y + dy[k];
-                    if (checkRange(mx, my)) {
-                        sb.append(time).append("\n");
-                        return;
-                    }
-                    if (!visit[mx][my] && map[mx][my] == '.') {
-                        visit[mx][my] = true;
-                        person.offer(new Point(mx, my));
-                    }
+    
+    public static void escape(int sx, int sy) {
+        Queue<Point> q = new LinkedList<>();
+        visit = new boolean[h][w];
+        visit[sx][sy] = true;
+        q.offer(new Point(-1, -1));
+        q.offer(new Point(sx, sy));
+        int time = -1;
+        
+        while(!q.isEmpty()) {
+            Point now = q.poll();
+            
+            if(now.x == -1 && now.y == -1) {
+                burn();
+                if(!q.isEmpty())
+                    q.offer(now);
+                time++;
+                continue;
+            }
+            
+            for(int i = 0; i < 4; i++) {
+                int nx = now.x + dx[i];
+                int ny = now.y + dy[i];
+                
+                if(nx >= h || ny >= w || nx < 0 || ny < 0) {
+                    sb.append(time+1 + "\n");
+                    return;
+                }
+                if(map[nx][ny] == '.' && !visit[nx][ny]) {
+                    q.offer(new Point(nx, ny));
+                    visit[nx][ny] = true;
                 }
             }
         }
+        
         sb.append("IMPOSSIBLE\n");
     }
-
-    private static void burn() {
-        int size = fires.size();
-        for (int s = 0; s < size; s++) {
-            Point cur = fires.poll();
-
-            for (int k = 0; k < dx.length; k++) {
-                int mx = cur.x + dx[k];
-                int my = cur.y + dy[k];
-                if (checkRange(mx, my)) continue;
-                if (map[mx][my] == '.' || map[mx][my] == '@') {
-                    map[mx][my] = '*';
-                    fires.offer(new Point(mx, my));
+    
+    public static void burn() {
+        int size = fire.size();
+        
+        for(int s = 0; s < size; s++) {
+            Point now = fire.poll();
+            
+            for(int i = 0; i < 4; i++) {
+                int nx = now.x + dx[i];
+                int ny = now.y + dy[i];
+                
+                if(nx >= 0 && ny >= 0 && nx < h && ny < w && (map[nx][ny] == '.' || map[nx][ny] == '@')) {
+                    fire.offer(new Point(nx, ny));
+                    map[nx][ny] = '*';
                 }
             }
         }
     }
-
-    private static boolean checkRange(int mx, int my) {
-        return mx < 0 || my < 0 || mx >= H || my >= W;
-    }
-
+    
     static class Point {
         int x, y;
-
+        
         Point(int x, int y) {
             this.x = x;
             this.y = y;
