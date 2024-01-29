@@ -1,83 +1,69 @@
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.StringTokenizer;
 
 public class Main {
-	static private int[] dx = { -1, 1, 0, 0 };
-	static private int[] dy = { 0, 0, -1, 1 };
-	private static int M;
-	private static int N;
-	private static int[][] map;
-	private static int min;
-	private static boolean[][][] visited;
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		M = sc.nextInt();
-		N = sc.nextInt();
-		map = new int[N + 1][M + 1];
-		visited = new boolean[N + 1][M + 1][2];
-		for (int i = 0; i < N; i++) {
-			String tmp = sc.next();
-			for (int j = 0; j < M; j++) {
-				map[i][j] = tmp.charAt(j) - '0';
-			}
-		}
+    static int N, M;
+    static int[][] map;
+    static int[] dx = {-1, 1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
 
-		min = 99999999;
-		dijkstra(0, 0, 0);
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        M = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+        map = new int[N][M];
+        for (int i = 0; i < N; i++) {
+            String str = br.readLine();
+            for (int j = 0; j < M; j++) {
+                map[i][j] = str.charAt(j) - '0';
+            }
+        }
 
-		System.out.println(min);
-	}
+        System.out.println(bfs(0, 0));
+    }
 
-	private static void dijkstra(int i, int j, int cnt) {
-		PriorityQueue<Point> queue = new PriorityQueue<>();
-		queue.offer(new Point(i, j, cnt));
-		boolean[][] visited = new boolean[N][M];
-		visited[0][0] = true;
+    private static int bfs(int startX, int startY) {
+        Deque<Point> dq = new ArrayDeque<>();
+        boolean[][] visit = new boolean[N][M];
+        dq.offer(new Point(startX, startY, 0));
+        visit[startX][startY] = true;
 
-		while (!queue.isEmpty()) {
-			Point p = queue.poll();
-			if (p.x == N - 1 && p.y == M - 1) {
-				min = Math.min(min, p.cnt);
-				return;
-			}
+        while (!dq.isEmpty()) {
+            Point cur = dq.poll();
 
-			for (int k = 0; k < dx.length; k++) {
-				int x = p.x + dx[k];
-				int y = p.y + dy[k];
-				if (x < 0 || y < 0 || x >= N || y >= M)
-					continue;
-				if (visited[x][y])
-					continue;
-				if (map[x][y] == 0) {
-					queue.offer(new Point(x, y, p.cnt));
-				}
-				if (map[x][y] == 1) {
-					queue.offer(new Point(x, y, p.cnt + 1));
-				}
-				visited[x][y] = true;
+            if (cur.x == N - 1 && cur.y == M - 1) {
+                return cur.cnt;
+            }
 
-			}
-		}
+            for (int k = 0; k < dx.length; k++) {
+                int mx = cur.x + dx[k];
+                int my = cur.y + dy[k];
+                if (mx < 0 || my < 0 || mx >= N || my >= M) continue;
+                if (visit[mx][my]) continue;
+                visit[mx][my] = true;
+                if (map[mx][my] == 1) {
+                    dq.offerLast(new Point(mx, my, cur.cnt + 1));
+                } else {
+                    dq.offerFirst(new Point(mx, my, cur.cnt));
+                }
+            }
+        }
+        return 0;
+    }
 
-	}
+    static class Point {
+        int x, y, cnt;
 
-	static class Point implements Comparable<Point> {
-		int x, y, cnt;
 
-		public Point(int x, int y, int cnt) {
-			super();
-			this.x = x;
-			this.y = y;
-			this.cnt = cnt;
-		}
-
-		@Override
-		public int compareTo(Point o) {
-			return this.cnt - o.cnt;
-		}
-
-	}
+        Point(int x, int y, int cnt) {
+            this.x = x;
+            this.y = y;
+            this.cnt = cnt;
+        }
+    }
 }
