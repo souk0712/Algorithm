@@ -1,24 +1,26 @@
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.util.*
 
 fun main() = with(BufferedReader(InputStreamReader(System.`in`))) {
-    data class Hello(val l: Int, val j: Int)
-
     val n = readLine().toInt()
-    val l = readLine().split(" ").map { it.toInt() }.toIntArray()
-    val j = readLine().split(" ").map { it.toInt() }.toIntArray()
+    val health = IntArray(n)
+    val joy = IntArray(n)
+    var st = StringTokenizer(readLine())
+    for (i in 0 until n) {
+        health[i] = st.nextToken().toInt()
+    }
+
+    st = StringTokenizer(readLine())
+    for (i in 0 until n) {
+        joy[i] = st.nextToken().toInt()
+    }
 
     val dp = Array(n + 1) { IntArray(100) { 0 } }
-    val hello = mutableListOf<Hello>()
-    for (i in 0 until n) {
-        hello.add(Hello(l[i], j[i]))
-    }
-    hello.sortedWith(Comparator { o1, o2 -> o1.l.compareTo(o2.j) })
     for (i in 1..n) {
-        val cur = hello[i - 1]
         for (j in 1..99) {
-            if (cur.l <= j) {
-                dp[i][j] = dp[i - 1][j].coerceAtLeast(cur.j + dp[i - 1][j - cur.l])
+            if (health[i - 1] <= j) {
+                dp[i][j] = dp[i - 1][j].coerceAtLeast(joy[i - 1] + dp[i - 1][j - health[i - 1]])
             } else {
                 dp[i][j] = dp[i - 1][j];
             }
