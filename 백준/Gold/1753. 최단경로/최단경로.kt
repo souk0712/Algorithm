@@ -46,7 +46,7 @@ fun main() = with(BufferedReader(InputStreamReader(System.`in`))) {
     dijkstra(start)
 
     for (i in 1 until dist.size) {
-        sb.append(dist[i].let { if (it == Int.MAX_VALUE) "INF" else it }).append("\n")
+        sb.append(dist[i].takeIf { it != Int.MAX_VALUE } ?: "INF").append("\n")
     }
     println(sb)
 }
