@@ -36,7 +36,7 @@ public class Main {
         while (!dq.isEmpty()) {
             Marble cur = dq.poll();
             if (cur.cnt > 10) {
-                continue;
+                break;
             }
             if (map[cur.blue.x][cur.blue.y] == 'O') {
                 continue;
