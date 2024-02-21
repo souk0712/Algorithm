@@ -45,7 +45,6 @@ public class Main {
         for (int i = 2; i <= r; i++) {
             res = res * (n - r + i) / i;
         }
-        if (res > Math.pow(10, 16)) return (long) Math.pow(10, 16);
         return (long) res;
     }
 
