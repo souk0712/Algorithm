@@ -3,30 +3,27 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-
-    static int[][] dp;
-
+    
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
         for (int t = 0; t < T; t++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            int N = Integer.parseInt(st.nextToken());
-            int M = Integer.parseInt(st.nextToken());
-            dp = new int[M + 1][N + 1];
-            System.out.println(putBridge(M, N));
-        }
-    }
+            int N = Integer.parseInt(st.nextToken());   // r
+            int M = Integer.parseInt(st.nextToken());   // n
+            int[][] dp = new int[30][30];
+            for (int i = 0; i <= M; i++) {
+                dp[i][0] = 1;
+            }
 
-    private static int putBridge(int n, int k) {
-        if (dp[n][k] > 0) {
-            return dp[n][k];
+            for (int i = 1; i <= M; i++) {
+                for (int j = 1; j <= N; j++) {
+                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+                }
+            }
+            sb.append(dp[M][N]).append("\n");
         }
-
-        if (n == k || k == 0) {
-            return dp[n][k] = 1;
-        }
-
-        return dp[n][k] = putBridge(n - 1, k - 1) + putBridge(n - 1, k);
+        System.out.println(sb);
     }
 }
