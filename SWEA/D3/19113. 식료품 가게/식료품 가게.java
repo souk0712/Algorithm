@@ -3,36 +3,36 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Solution {
-    
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
         StringBuilder sb = new StringBuilder();
-        for (int t = 1; t <= T; t++) {
-            sb.append("#").append(t).append(" ");
-            int N = Integer.parseInt(br.readLine());
-            int[] arr = new int[2 * N];
-            boolean[] visit = new boolean[2 * N];
+        for (int t = 0; t < T; t++) {
+            sb.append("#").append(t + 1).append(" ");
+            int n = Integer.parseInt(br.readLine());
+            long[] arr = new long[2 * n];
+            long[] ans = new long[n];
             StringTokenizer st = new StringTokenizer(br.readLine());
-            for (int i = 0; i < arr.length; i++) {
+            for (int i = 0; i < 2 * n; i++) {
                 arr[i] = Integer.parseInt(st.nextToken());
             }
-            for (int i = arr.length - 1; i >= 0; i--) {
+            boolean[] visit = new boolean[2 * n];
+            for (int i = 0, index = 0; i < 2 * n - 1; i++) {
+                long first = arr[i];
                 if (visit[i]) continue;
-                double discount = arr[i] * 0.75;
-                for (int j = i - 1; j >= 0; j--) {
+                visit[i] = true;
+                for (int j = i + 1; j < 2 * n; j++) {
+                    long second = arr[j];
                     if (visit[j]) continue;
-                    if (arr[j] == discount) {
+                    if ((first * 100) / 75 == second) {
+                        ans[index++] = first;
                         visit[j] = true;
                         break;
                     }
                 }
             }
-
-            for (int i = 0; i < visit.length; i++) {
-                if (visit[i]) {
-                    sb.append(arr[i]).append(" ");
-                }
+            for (int i = 0; i < n; i++) {
+                sb.append(ans[i]).append(" ");
             }
             sb.append("\n");
         }
