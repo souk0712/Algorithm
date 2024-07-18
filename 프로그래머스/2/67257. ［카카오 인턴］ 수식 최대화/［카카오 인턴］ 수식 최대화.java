@@ -2,11 +2,6 @@ import java.io.*;
 import java.util.*;
 
 class Solution {
-    // 숫자들과 3가지의 연산문자(+, -, *)
-    // + > - > * 또는 - > * > + 등과 같이 연산자 우선순위를 정의
-    // 수식에 포함된 연산자가 2개라면 정의할 수 있는 연산자 우선순위 조합은 2! = 2가지이며, 연산자가 3개라면 3! = 6가지 조합
-    //  계산된 결과가 음수라면 해당 숫자의 절댓값으로 변환하여 제출
-    // 제출한 숫자가 가장 큰 참가자를 우승자로 선정 -> 제출한 숫자를 우승상금
     
     static ArrayList<String> operators, distinctOperator;
     static ArrayList<Integer> numbers;
@@ -79,20 +74,16 @@ class Solution {
                     switch (oper) {
                         case "-":
                             numbersDupli.set(i, front - back);
-                            numbersDupli.remove(i + 1);
-                            operatorsDupli.remove(i);
                             break;
                         case "+":
                             numbersDupli.set(i, front + back);
-                            numbersDupli.remove(i + 1);
-                            operatorsDupli.remove(i);
                             break;
                         case "*":
                             numbersDupli.set(i, front * back);
-                            numbersDupli.remove(i + 1);
-                            operatorsDupli.remove(i);
                             break;
                     }
+                    numbersDupli.remove(i + 1);
+                    operatorsDupli.remove(i);
                     i--;
                 }
             }
