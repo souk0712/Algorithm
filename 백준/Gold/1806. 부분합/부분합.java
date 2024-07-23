@@ -11,28 +11,33 @@ public class Main {
         int N = Integer.parseInt(st.nextToken());
         int S = Integer.parseInt(st.nextToken());
         int[] arr = new int[N];
-        int start = 0, end = 0;
-        int sum = 0, count = 0, min = Integer.MAX_VALUE;
+        int ans = Integer.MAX_VALUE;
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
+        int start = 0, end = 0;
+        int sum = 0;
         while (start < N) {
-            if (sum >= S) {
-                min = Math.min(min, count);
-                sum -= arr[start++];
-                count--;
-            } else if (end < N) {
-                sum += arr[end++];
-                count++;
+            if (end < N) {
+                if (sum < S) {
+                    sum += arr[end++];
+                } else {
+                    sum -= arr[start];
+                    start++;
+                }
             } else {
-                sum -= arr[start++];
-                count--;
+                sum -= arr[start];
+                start++;
+            }
+
+            if (sum >= S) {
+                ans = Math.min(ans, end - start);
             }
         }
 
-        System.out.println(min == Integer.MAX_VALUE ? 0 : min);
+        System.out.println(ans == Integer.MAX_VALUE ? 0 : ans);
     }
 }
