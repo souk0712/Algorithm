@@ -1,50 +1,38 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class Main {
-
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine());
-        long[] minArr = new long[101];
-
         StringBuilder sb = new StringBuilder();
-        Arrays.fill(minArr, Long.MAX_VALUE);
-        minArr[2] = 1;
-        minArr[3] = 7;
-        minArr[4] = 4;
-        minArr[5] = 2;
-        minArr[6] = 6;
-        minArr[7] = 8;
-        minArr[8] = 10;
-
-        String[] add = {"1", "7", "4", "2", "0", "8"};
-        for (int i = 9; i < minArr.length; i++) {
+        int t = Integer.parseInt(br.readLine());
+        int[] arr = new int[]{1, 7, 4, 2, 0, 8};
+        String[] max = new String[101];
+        long[] min = new long[101];
+        max[2] = "1";
+        max[3] = "7";
+        min[2] = 1;
+        min[3] = 7;
+        min[4] = 4;
+        min[5] = 2;
+        min[6] = 6;
+        min[7] = 8;
+        min[8] = 10;
+        for (int i = 4; i < max.length; i++) {
+            max[i] = max[i - 2] + "1";
+        }
+        for (int i = 9; i < min.length; i++) {
+            min[i] = Long.MAX_VALUE;
             for (int j = 2; j <= 7; j++) {
-                String s = "" + minArr[i - j] + add[j - 2];
-                minArr[i] = Math.min(Long.parseLong(s), minArr[i]);
+                String s = "" + min[i - j] + arr[j - 2];
+                min[i] = Math.min(Long.parseLong(s), min[i]);
             }
         }
 
-        for (int t = 0; t < T; t++) {
-            int N = Integer.parseInt(br.readLine());
-            StringBuilder max = new StringBuilder();
-            // max
-            if (N % 2 == 0) {
-                int m = N / 2;
-                for (int i = 0; i < m; i++) {
-                    max.append(1);
-                }
-            } else {
-                max.append(7);
-                int m = N / 2;
-                for (int i = 0; i < m - 1; i++) {
-                    max.append(1);
-                }
-            }
-
-            sb.append(minArr[N]).append(" ").append(max).append("\n");
+        while (t-- > 0) {
+            int n = Integer.parseInt(br.readLine());
+            sb.append(min[n]).append(" ").append(max[n]).append("\n");
         }
         System.out.println(sb);
     }
