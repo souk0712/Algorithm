@@ -1,70 +1,75 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class Main {
 
-	private static int[][] map;
-	private static int N;
-	private static int[][] visited;
-	private static int[] dx = { -1, 1, 0, 0 }; // 상하좌우
-	private static int[] dy = { 0, 0, -1, 1 };
+    static int N;
+    static int[][] map;
+    static boolean[][] visit;
+    static ArrayList<Integer> ans;
+    static int[] dx = {-1, 0, 1, 0};
+    static int[] dy = {0, -1, 0, 1};
 
-	private static PriorityQueue<Integer> pq;
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N = Integer.parseInt(br.readLine());
+        map = new int[N][N];
+        visit = new boolean[N][N];
+        ans = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            String str = br.readLine();
+            for (int j = 0; j < N; j++) {
+                map[i][j] = str.charAt(j) - '0';
+            }
+        }
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
-		map = new int[N][N];
-		visited = new int[N][N];
-		pq = new PriorityQueue<>();
-		for (int i = 0; i < N; i++) {
-			String tmp = br.readLine();
-			for (int j = 0; j < N; j++) {
-				map[i][j] = tmp.charAt(j) - '0';
-			}
-		}
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (map[i][j] == 0 || visit[i][j]) continue;
+                bfs(i, j);
+            }
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append(ans.size()).append("\n");
+        Collections.sort(ans);
+        for (int i : ans) {
+            sb.append(i).append("\n");
+        }
+        System.out.println(sb);
+    }
 
-		for (int i = 0; i < map.length; i++) {
-			for (int j = 0; j < map[i].length; j++) {
-				if (map[i][j] != 0 && visited[i][j] != 1)
-					bfs(i, j);
-			}
-		}
+    private static void bfs(int i, int j) {
+        visit[i][j] = true;
+        Queue<Pos> q = new LinkedList<>();
+        q.offer(new Pos(i, j));
+        int count = 0;
+        while (!q.isEmpty()) {
+            Pos cur = q.poll();
+            count++;
 
-		StringBuilder sb = new StringBuilder();
-		sb.append(pq.size() + "\n");
-		while (!pq.isEmpty()) {
-			sb.append(pq.poll() + "\n");
-		}
+            for (int k = 0; k < 4; k++) {
+                int mx = cur.x + dx[k];
+                int my = cur.y + dy[k];
+                if (mx < 0 || mx >= N || my < 0 || my >= N) continue;
+                if (visit[mx][my] || map[mx][my] == 0) continue;
+                visit[mx][my] = true;
+                q.offer(new Pos(mx, my));
+            }
+        }
+        ans.add(count);
+    }
 
-		System.out.print(sb);
-	}
+    static class Pos {
+        int x, y;
 
-	private static void bfs(int i, int j) {
-		Queue<int[]> q = new LinkedList<>();
-		q.add(new int[] { i, j });
-		int count = 1;
-		visited[i][j] = 1;
-		while (!q.isEmpty()) {
-			int[] current = q.poll();
-
-			for (int k = 0; k < dx.length; k++) {
-				int x = current[0] + dx[k];
-				int y = current[1] + dy[k];
-				if (x < 0 || x >= N || y < 0 || y >= N)
-					continue;
-				if (map[x][y] == 0 || visited[x][y] == 1)
-					continue;
-				q.add(new int[] { x, y });
-				visited[x][y] = 1;
-				count++;
-			}
-		}
-		pq.offer(count);
-	}
+        public Pos(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
 }
