@@ -1,85 +1,73 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
 
     static int N, D;
-    static int[] dp;
     static ArrayList<Node>[] list;
+    static int[] dist;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         D = Integer.parseInt(st.nextToken());
-        list = new ArrayList[10_001];
-        dp = new int[D + 1];
-        for (int i = 1; i <= D; i++) dp[i] = i;
-
-        for (int i = 0; i < list.length; i++) {
+        list = new ArrayList[10001];
+        dist = new int[10001];
+        for (int i = 0; i <= 10000; i++) {
             list[i] = new ArrayList<>();
         }
-
+        for (int i = 0; i < D; i++) {
+            list[i].add(new Node(i + 1, 1));
+        }
+        Arrays.fill(dist, Integer.MAX_VALUE);
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-            int start = Integer.parseInt(st.nextToken());
-            int end = Integer.parseInt(st.nextToken());
-            int length = Integer.parseInt(st.nextToken());
-
-            list[start].add(new Node(end, length));
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            list[a].add(new Node(b, c));
         }
-        
         dijkstra(0);
-
-        System.out.println(dp[D]);
+        System.out.println(dist[D]);
     }
 
-    private static void dijkstra(int start) {
+    private static void dijkstra(int s) {
         PriorityQueue<Node> pq = new PriorityQueue<>();
-        pq.offer(new Node(start, dp[start]));
+        pq.offer(new Node(s, dist[s]));
+        dist[s] = 0;
 
         while (!pq.isEmpty()) {
             Node cur = pq.poll();
-            int index = cur.index;
-            int length = cur.length;
-
-            if (index > D && dp[index] < length) continue;
-
-            for (int i = 0; i < list[index].size(); i++) {
-                Node n = list[index].get(i);
-                if (n.index <= D) {
-                    int ll = dp[index] + n.length;
-                    if (ll < dp[n.index]) {
-                        dp[n.index] = ll;
-                        pq.offer(new Node(n.index, ll));
-                    }
-                }
+            if (D == cur.next) {
+                return;
             }
 
-            if (index + 1 > D) continue;
-            int ll = dp[index] + 1;
-            if (ll <= dp[index + 1]) {
-                dp[index + 1] = ll;
-                pq.offer(new Node(index + 1, dp[index] + 1));
+            for (int k = 0; k < list[cur.next].size(); k++) {
+                Node n = list[cur.next].get(k);
+                if (dist[n.next] > n.cost + dist[cur.next]) {
+                    dist[n.next] = n.cost + dist[cur.next];
+                    pq.offer(new Node(n.next, dist[n.next]));
+                }
             }
         }
     }
 
-    public static class Node implements Comparable<Node> {
-        int index, length;
+    static class Node implements Comparable<Node> {
+        int next, cost;
 
-        public Node(int index, int length) {
-            this.index = index;
-            this.length = length;
+        Node(int next, int cost) {
+            this.next = next;
+            this.cost = cost;
         }
 
         @Override
         public int compareTo(Node o) {
-            return Integer.compare(length, o.length);
+            return Integer.compare(cost, o.cost);
         }
     }
 }
