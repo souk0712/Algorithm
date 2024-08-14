@@ -1,49 +1,40 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
-        int N = Integer.parseInt(st.nextToken());
-        int K = Integer.parseInt(st.nextToken());
-
-        int[] arr = new int[N];
-        int[] count = new int[100_001];
-
+        int n = Integer.parseInt(st.nextToken());
+        int k = Integer.parseInt(st.nextToken());
+        int[] arr = new int[n];
         st = new StringTokenizer(br.readLine());
-
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
-
-        int max = Integer.MIN_VALUE;
-        int length = 0;
-        ArrayList<Integer> list = new ArrayList<>();
-
-        for (int i = 0; i < N; i++) {
-            list.add(arr[i]);
-            count[arr[i]]++;
-
-            if (length < list.size() && K >= count[arr[i]]) {
-                length = list.size();
-            } else {
-                length = 0;
-                int index = list.indexOf(arr[i]);
-
-
-                for (int j = index; j >= 0; j--) {
-                    count[list.get(j)]--;
-                    list.remove(j);
+        int ans = 0;
+        int[] num = new int[100_001];
+        int left = 0;
+        int right = 0;
+        int len = 1;
+        num[arr[0]]++;
+        while (left < n) {
+            if (right + 1 < n) {
+                if (num[arr[right + 1]] + 1 <= k) {
+                    num[arr[++right]]++;
+                    len++;
+                } else {
+                    ans = Math.max(ans, len);
+                    len--;
+                    num[arr[left++]]--;
                 }
+            } else {
+                ans = Math.max(ans, len);
+                len--;
+                num[arr[left++]]--;
             }
-            max = Math.max(max, length);
         }
-
-        System.out.println(max);
+        System.out.println(ans);
     }
 }
