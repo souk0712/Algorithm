@@ -1,62 +1,56 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
 public class Main {
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
-        ArrayList<String> list = new ArrayList<>();
-        Map<String, Integer> count = new HashMap<>();
-        StringBuilder sb = new StringBuilder();
-
+        PriorityQueue<Word> pq = new PriorityQueue<>();
+        Map<String, Word> map = new HashMap<>();
         for (int i = 0; i < N; i++) {
-            String input = br.readLine();
-            if (input.length() >= M) {
-                list.add(input);
-
-                if (count.containsKey(input)) {
-                    int c = count.get(input);
-                    count.put(input, c += 1);
-                } else {
-                    count.put(input, 1);
-                }
+            String str = br.readLine();
+            if (str.length() >= M) {
+                map.put(str, new Word(str, 1 + map.getOrDefault(str, new Word(str, 0)).count));
             }
         }
-
-        Collections.sort(list, (o1, o2) -> {
-            int o1Count = count.get(o1);
-            int o2Count = count.get(o2);
-            int i = Integer.compare(o2Count, o1Count);
-            if (i == 0) {
-                int ii = Integer.compare(o2.length(), o1.length());
-                if (ii == 0) {
-                    return o1.compareTo(o2);
-                } else {
-                    return ii;
-                }
-            } else {
-                return i;
-            }
-        });
-
-        String com = "";
-        for (int i = list.size() - 1; i >= 0; i--) {
-            if (com.equals(list.get(i))) {
-                list.remove(i);
-            } else {
-                com = list.get(i);
-            }
+        for (Word w : map.values()) {
+            pq.offer(w);
         }
-
-        for (String s : list) {
-            sb.append(s).append("\n");
+        StringBuilder sb = new StringBuilder();
+        while (!pq.isEmpty()) {
+            sb.append(pq.poll().str).append("\n");
         }
-
         System.out.println(sb);
+    }
+
+    static class Word implements Comparable<Word> {
+        String str;
+        int count;
+
+        Word(String str, int count) {
+            this.str = str;
+            this.count = count;
+        }
+
+        @Override
+        public int compareTo(Word o) {
+            int c = Integer.compare(o.count, count);
+            if (c == 0) {
+                int cc = Integer.compare(o.str.length(), str.length());
+                if (cc == 0) {
+                    return str.compareTo(o.str);
+                } else {
+                    return cc;
+                }
+            } else {
+                return c;
+            }
+        }
     }
 }
