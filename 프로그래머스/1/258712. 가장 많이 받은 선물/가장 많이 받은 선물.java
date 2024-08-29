@@ -12,8 +12,6 @@ class Solution {
         // => 선물을 가장 많이 받을 친구가 받을 선물의 수
         
         Map<String, Integer> friend = new HashMap<>();
-        int[] give = new int[friends.length];
-        int[] receive = new int[friends.length];
         int[] point = new int[friends.length];
         int[] nextMonth = new int[friends.length];
         int[][] map = new int[friends.length][friends.length];
@@ -26,13 +24,11 @@ class Solution {
             String[] str = gifts[i].split(" ");
             int A = friend.get(str[0]);
             int B = friend.get(str[1]);
-            give[A]++;
-            receive[B]++;
+            // 선물 지수
+            point[A]++;
+            point[B]--;
+            // 주고 받은 관계
             map[A][B]++;
-        }
-        // 선물 지수
-        for(int i = 0; i < point.length; i++){
-            point[i] = give[i] - receive[i];
         }
         // 다음 달 선물 증정
         for(int i = 0; i < map.length; i++){
