@@ -8,14 +8,18 @@ class Solution {
         for(int i = 0; i < n; i++){
             String str = Integer.toBinaryString(arr1[i] | arr2[i]);
             int diff = n - str.length();
-            String temp = "";
+            String res = "";
             for(int j = 0; j < diff; j++){
-                temp += "0";
+                res += " ";
             }
-            str = temp + str;
-            str = str.replaceAll("1", "#");
-            str = str.replaceAll("0", " ");
-            answer[i] = str;
+            for(int j = 0; j < str.length(); j++){
+                if(str.charAt(j) == '1'){
+                    res += '#';
+                }else{
+                    res += ' ';
+                }
+            }
+            answer[i] = res;
         }
         return answer;
     }
