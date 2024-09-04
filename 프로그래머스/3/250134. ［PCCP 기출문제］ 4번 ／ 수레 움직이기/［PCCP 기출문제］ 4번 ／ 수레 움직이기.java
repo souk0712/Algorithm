@@ -2,98 +2,89 @@ import java.io.*;
 import java.util.*;
 
 class Solution {
-    static int N, M, ans;
+    
+    static int[] redStart, blueStart;
+    static int N, M, answer;
     static boolean[][][] visit;
-    static boolean redFinished, blueFinished;
+    static boolean isRedFinish, isBlueFinish;
     static int[] dx = {-1, 1, 0, 0};
     static int[] dy = {0, 0, -1, 1};
 
     public int solution(int[][] maze) {
+        answer = Integer.MAX_VALUE;
         N = maze.length;
         M = maze[0].length;
         visit = new boolean[2][N][M];
-        ans = Integer.MAX_VALUE;
-        Pos curRed = null, curBlue = null;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
                 if (maze[i][j] == 1) {
-                    curRed = new Pos(i, j);
+                    redStart = new int[]{i, j};
                 } else if (maze[i][j] == 2) {
-                    curBlue = new Pos(i, j);
+                    blueStart = new int[]{i, j};
                 }
             }
         }
-        
-        visit[0][curRed.x][curRed.y] = true;
-        visit[1][curBlue.x][curBlue.y] = true;
-        
-        dfs(maze, curRed, curBlue, 0);
 
-        return ans == Integer.MAX_VALUE ? 0 : ans;
+        visit[0][redStart[0]][redStart[1]] = true;
+        visit[1][blueStart[0]][blueStart[1]] = true;
+        dfs(maze, redStart[0], redStart[1], blueStart[0], blueStart[1], 0);
+
+        return answer==Integer.MAX_VALUE?0:answer;
     }
 
-    private static void dfs(int[][] maze, Pos red, Pos blue, int cnt) {
-        if (redFinished && blueFinished) {
-            ans = Math.min(ans, cnt);
+    static void dfs(int[][] maze, int rx, int ry, int bx, int by, int cnt) {
+        if (maze[rx][ry] == 3 && maze[bx][by] == 4) {
+            answer = Math.min(answer, cnt);
             return;
+        }
+        if (maze[rx][ry] == 3) {
+            isRedFinish = true;
+        }
+        if (maze[bx][by] == 4) {
+            isBlueFinish = true;
         }
 
         for (int k = 0; k < dx.length; k++) {
             for (int l = 0; l < dx.length; l++) {
-                Pos nextRed, nextBlue;
-                if (redFinished) {
-                    nextRed = red;
-                } else {
-                    nextRed = new Pos(red.x + dx[k], red.y + dy[k]);
+                int nrx = rx + dx[k];
+                int nry = ry + dy[k];
+                int nbx = bx + dx[l];
+                int nby = by + dy[l];
+
+                // 자신의 도착 칸에 위치한 수레는 움직이지 않습니다. 계속 해당 칸에 고정해 놓아야 합니다.
+                if (isRedFinish) {
+                    nrx = rx;
+                    nry = ry;
                 }
-                if (blueFinished) {
-                    nextBlue = blue;
-                } else {
-                    nextBlue = new Pos(blue.x + dx[l], blue.y + dy[l]);
+                if (isBlueFinish) {
+                    nbx = bx;
+                    nby = by;
                 }
 
-                if (!isPossible(maze, red, blue, nextRed, nextBlue)) continue;
-                if (maze[nextRed.x][nextRed.y] == 3) redFinished = true;
-                if (maze[nextBlue.x][nextBlue.y] == 4) blueFinished = true;
+                // 수레는 벽이나 격자 판 밖으로 움직일 수 없습니다.
+                if (checkRangeOut(nrx, nry) || checkRangeOut(nbx, nby) || maze[nrx][nry] == 5 || maze[nbx][nby] == 5)
+                    continue;
+                // 수레는 자신이 방문했던 칸으로 움직일 수 없습니다.
+                if (!isRedFinish && visit[0][nrx][nry] || !isBlueFinish && visit[1][nbx][nby]) continue;
+                // 동시에 두 수레를 같은 칸으로 움직일 수 없습니다.
+                if (nrx == nbx && nry == nby) continue;
+                // 수레끼리 자리를 바꾸며 움직일 수 없습니다.
+                if (rx == nbx && ry == nby && bx == nrx && by == nry) continue;
+                
+                visit[0][nrx][nry] = true;
+                visit[1][nbx][nby] = true;
 
-                visit[0][nextRed.x][nextRed.y] = true;
-                visit[1][nextBlue.x][nextBlue.y] = true;
+                dfs(maze, nrx, nry, nbx, nby, cnt + 1);
 
-                dfs(maze, nextRed, nextBlue, cnt + 1);
-
-                visit[0][nextRed.x][nextRed.y] = false;
-                visit[1][nextBlue.x][nextBlue.y] = false;
-                redFinished = false;
-                blueFinished = false;
+                visit[0][nrx][nry] = false;
+                visit[1][nbx][nby] = false;
+                isRedFinish = false;
+                isBlueFinish = false;
             }
         }
     }
 
-    static boolean isPossible(int[][] map, Pos curRed, Pos curBlue, Pos red, Pos blue) {
-        // 범위 체크
-        if (red.x < 0 || red.x >= N || red.y < 0 || red.y >= M || blue.x < 0 || blue.x >= N || blue.y < 0 || blue.y >= M)
-            return false;
-        // 벽
-        if (map[red.x][red.y] == 5 || map[blue.x][blue.y] == 5) return false;
-
-        // 재방문 체크
-        if (!redFinished && visit[0][red.x][red.y] || !blueFinished && visit[1][blue.x][blue.y]) return false;
-
-        // 동시에 두 수레가 같은 칸인지 체크
-        if (red.x == blue.x && red.y == blue.y) return false;
-
-        // 수레끼리 자리 바꾸기 체크
-        if ((curRed.x == blue.x && curRed.y == blue.y) && (curBlue.x == red.x && curBlue.y == red.y)) return false;
-
-        return true;
-    }
-
-    static class Pos {
-        int x, y;
-
-        Pos(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
+    static boolean checkRangeOut(int x, int y) {
+        return x < 0 || y < 0 || x >= N || y >= M;
     }
 }
