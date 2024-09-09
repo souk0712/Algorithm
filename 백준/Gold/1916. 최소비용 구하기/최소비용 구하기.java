@@ -6,61 +6,63 @@ import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
+
     static int N, M;
-    static int[] dist;
-    static ArrayList<Pos>[] list;
+    static int[] dp;
+    static ArrayList<Node>[] list;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
         M = Integer.parseInt(br.readLine());
+        dp = new int[N + 1];
         list = new ArrayList[N + 1];
-        dist = new int[N + 1];
-        for (int i = 1; i <= N; i++) list[i] = new ArrayList<>();
-        Arrays.fill(dist, 100_000_001);
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        for (int i = 1; i <= N; i++) {
+            list[i] = new ArrayList<>();
+        }
         for (int i = 0; i < M; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            int to = Integer.parseInt(st.nextToken());
-            int from = Integer.parseInt(st.nextToken());
-            int cost = Integer.parseInt(st.nextToken());
-            list[to].add(new Pos(from, cost));
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            list[a].add(new Node(b, c));
         }
         StringTokenizer st = new StringTokenizer(br.readLine());
         int start = Integer.parseInt(st.nextToken());
         int end = Integer.parseInt(st.nextToken());
+        System.out.println(dijkstra(start, end));
+    }
 
-        PriorityQueue<Pos> pq = new PriorityQueue<>();
-        boolean[] visit = new boolean[N + 1];
-        dist[start] = 0;
-        pq.offer(new Pos(start, dist[start]));
-
+    private static int dijkstra(int start, int end) {
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        pq.offer(new Node(start, 0));
+        dp[start] = 0;
         while (!pq.isEmpty()) {
-            Pos cur = pq.poll();
-            if (visit[cur.next]) continue;
-            visit[cur.next] = true;
-
-            for (int k = 0; k < list[cur.next].size(); k++) {
-                Pos n = list[cur.next].get(k);
-                if (visit[n.next]) continue;
-                if (dist[n.next] > dist[cur.next] + n.cost) {
-                    dist[n.next] = dist[cur.next] + n.cost;
-                    pq.offer(new Pos(n.next, dist[n.next]));
+            Node cur = pq.poll();
+            if (cur.next == end) {
+                return cur.cost;
+            }
+            for (Node n : list[cur.next]) {
+                if (dp[n.next] > dp[cur.next] + n.cost) {
+                    dp[n.next] = dp[cur.next] + n.cost;
+                    pq.offer(new Node(n.next, dp[n.next]));
                 }
             }
         }
-        System.out.println(dist[end]);
+        return 0;
     }
 
-    static class Pos implements Comparable<Pos> {
+    static class Node implements Comparable<Node> {
         int next, cost;
 
-        Pos(int next, int cost) {
+        public Node(int next, int cost) {
             this.next = next;
             this.cost = cost;
         }
 
         @Override
-        public int compareTo(Pos o) {
+        public int compareTo(Node o) {
             return Integer.compare(cost, o.cost);
         }
     }
