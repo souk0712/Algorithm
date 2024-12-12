@@ -1,10 +1,10 @@
 # [level 2] 당구 연습 - 169198 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/169198#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/169198) 
 
 ### 성능 요약
 
-메모리: 75.6 MB, 시간: 0.98 ms
+메모리: 83 MB, 시간: 0.91 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 12월 13일 00:22:57
+2024년 12월 13일 00:24:14
 
 ### 문제 설명
 

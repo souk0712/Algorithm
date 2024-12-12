@@ -7,7 +7,8 @@ class Solution {
         int[] answer = new int[balls.length];
         
         for(int i = 0; i < balls.length; i++){
-            int[] pointX = {-startX, startX + (m - startX) * 2, startX, startX};    // left, right, top, bottom
+            // left, right, top, bottom
+            int[] pointX = {-startX, startX + (m - startX) * 2, startX, startX};
             int[] pointY = {startY, startY, startY + (n - startY) * 2, -startY};
             int res = Integer.MAX_VALUE;
             
