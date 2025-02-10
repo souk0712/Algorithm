@@ -5,41 +5,38 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    static int N;
-    static int[] post, mid, pre;
-    static StringBuilder sb;
+    static int[] preOrder;
+    static int[] inOrder;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
-        sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         for (int t = 0; t < T; t++) {
-            N = Integer.parseInt(br.readLine());
-            pre = new int[N];
-            mid = new int[N];
-            post = new int[N];
+            int N = Integer.parseInt(br.readLine());
             StringTokenizer st = new StringTokenizer(br.readLine());
+            preOrder = new int[N];
+            inOrder = new int[N];
             for (int i = 0; i < N; i++) {
-                pre[i] = Integer.parseInt(st.nextToken());
+                preOrder[i] = Integer.parseInt(st.nextToken());
             }
-
             st = new StringTokenizer(br.readLine());
             for (int i = 0; i < N; i++) {
-                mid[i] = Integer.parseInt(st.nextToken());
+                inOrder[i] = Integer.parseInt(st.nextToken());
             }
 
-            postOrder(0, N, 0);
+            getPostOrder(sb, 0, N, 0);
             sb.append("\n");
         }
         System.out.println(sb);
     }
 
-    public static void postOrder(int s, int e, int pos) {
+    private static void getPostOrder(StringBuilder sb, int s, int e, int cur) {
         for (int i = s; i < e; i++) {
-            if (pre[pos] == mid[i]) {
-                postOrder(s, i, pos + 1); // left
-                postOrder(i + 1, e, pos + 1 + i - s); // right
-                sb.append(mid[i]).append(" ");
+            if (preOrder[cur] == inOrder[i]) {
+                getPostOrder(sb, s, i, cur + 1);
+                getPostOrder(sb, i + 1, e, cur + i + 1 - s);
+                sb.append(preOrder[cur]).append(" ");
             }
         }
     }
