@@ -18,11 +18,11 @@ class Solution {
         for(int i = 0; i < q.length; i++){
             int cnt = 0;
             for(int j = 0; j < q[i].length; j++){
-                int qq = q[i][j];
-                if(pick.contains(qq)){
+                if(pick.contains(q[i][j])){
                     cnt++;
                 }
             }
+            
             if(ans[i] != cnt){
                 return false;
             }
