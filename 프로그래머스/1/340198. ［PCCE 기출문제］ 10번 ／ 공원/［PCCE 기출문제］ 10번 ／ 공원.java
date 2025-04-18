@@ -5,18 +5,14 @@ class Solution {
     
     public int solution(int[] mats, String[][] park) {
         int answer = -1;
-        ArrayList<Integer> orderMats = new ArrayList<>();
-        for(int i : mats){
-            orderMats.add(i);
-        }
-        orderMats.sort(Collections.reverseOrder());
+        Arrays.sort(mats);
         
         out:
-        for(int k = 0; k < orderMats.size(); k++){
+        for(int k = mats.length - 1; k >= 0; k--){
             for(int i = 0; i < park.length; i++){
                 for(int j = 0; j < park[0].length; j++){
-                    if("-1".equals(park[i][j]) && checkSpace(park, i, j, orderMats.get(k))){
-                        answer = orderMats.get(k);
+                    if("-1".equals(park[i][j]) && checkSpace(park, i, j, mats[k])){
+                        answer = mats[k];
                         break out;
                     }
                 }
