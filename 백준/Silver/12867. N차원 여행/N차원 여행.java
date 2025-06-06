@@ -13,9 +13,9 @@ public class Main {
 
         List<Map<Integer, Integer>> path = new ArrayList<>();
         Map<Integer, Integer> cur = new HashMap<>();
-        
+
         path.add(new HashMap<>(cur));
-        
+
         for (int i = 0; i < m; i++) {
             int index = Integer.parseInt(st.nextToken());
             char c = dir.charAt(i);
@@ -35,11 +35,6 @@ public class Main {
             }
 
             path.add(new HashMap<>(cur));
-        }
-
-        if (cur.isEmpty()) {
-            System.out.println(0);
-            return;
         }
 
         System.out.println(1);
