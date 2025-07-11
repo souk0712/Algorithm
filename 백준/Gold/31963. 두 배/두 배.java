@@ -3,30 +3,36 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    
     static int N;
-    static int[] arr;
+    static double[] arr;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        arr = new int[N];
+        arr = new double[N];
         StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
+            arr[i] = Double.parseDouble(st.nextToken());
         }
-        int ans = calculate();
+        long ans = calculate();
         System.out.println(ans);
     }
 
-    private static int calculate() {
-        int cnt = 0;
+    private static long calculate() {
+        long res = 0;
+        double[] cnt = new double[N];
         for (int i = 1; i < N; i++) {
-            while (arr[i - 1] > arr[i]) {
-                arr[i] *= 2;
-                cnt++;
+            double logRes = log2(arr[i - 1] / arr[i]);
+            double k = Math.ceil(logRes) + cnt[i - 1];
+            if (k > 0) {
+                cnt[i] = k;
+                res += (long) cnt[i];
             }
         }
-        return cnt;
+        return res;
+    }
+
+    static double log2(double value) {
+        return Math.log(value) / Math.log(2);
     }
 }
