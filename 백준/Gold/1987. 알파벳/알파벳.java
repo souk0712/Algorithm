@@ -1,51 +1,52 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Main {
 
-    static int R, C, max;
+    static int R, C;
     static char[][] map;
-    static boolean[] alpha;
-    static int[] dx = {0, 0, 1, -1};
-    static int[] dy = {1, -1, 0, 0};
+    static int ans;
+    static int[] dx = {-1, 0, 1, 0};
+    static int[] dy = {0, -1, 0, 1};
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         R = Integer.parseInt(st.nextToken());
         C = Integer.parseInt(st.nextToken());
         map = new char[R][C];
-        alpha = new boolean[26];
-        max = Integer.MIN_VALUE;
-
-        for (int r = 0; r < R; r++) {
+        ans = 0;
+        for (int i = 0; i < R; i++) {
             String input = br.readLine();
-            for (int c = 0; c < C; c++) {
-                map[r][c] = input.charAt(c);
+            for (int j = 0; j < C; j++) {
+                map[i][j] = input.charAt(j);
             }
         }
-        alpha[map[0][0] % 'A'] = true;
-        dfs(0, 0, 0);
+        Set<Character> visited = new HashSet<>();
+        visited.add(map[0][0]);
+        dfs(0, 0, visited, 1);
 
-        System.out.println(max);
+        System.out.println(ans);
     }
 
-    private static void dfs(int i, int j, int count) {
-        for (int k = 0; k < dx.length; k++) {
-            int x = i + dx[k];
-            int y = j + dy[k];
+    private static void dfs(int x, int y, Set<Character> visited, int cnt) {
+        ans = Math.max(ans, cnt);
 
-            if (x < 0 || y < 0 || x >= R || y >= C) continue;
-            if (alpha[map[x][y] % 'A']) {
-                max = Math.max(max, count + 1);
-                continue;
-            }
-
-            alpha[map[x][y] % 'A'] = true;
-            dfs(x, y, count + 1);
-            alpha[map[x][y] % 'A'] = false;
+        for (int k = 0; k < 4; k++) {
+            int mx = x + dx[k];
+            int my = y + dy[k];
+            if (isOutRange(mx, my)) continue;
+            if (visited.contains(map[mx][my])) continue;
+            visited.add(map[mx][my]);
+            dfs(mx, my, visited, cnt + 1);
+            visited.remove(map[mx][my]);
         }
+    }
+
+    private static boolean isOutRange(int x, int y) {
+        return x < 0 || x >= R || y < 0 || y >= C;
     }
 }
