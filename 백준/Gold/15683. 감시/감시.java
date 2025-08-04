@@ -6,176 +6,171 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    static int N, M, min;
+    static int N, M, ans;
     static int[][] map;
-    static int[] dx = {-1, 1, 0, 0};    // 위, 아래, 왼, 오
-    static int[] dy = {0, 0, -1, 1};
-    static ArrayList<CCTV> list;
+    static int[] dx = {0, -1, 0, 1};    // 우 하 좌 상
+    static int[] dy = {1, 0, -1, 0};
+    static ArrayList<CCTV> cctvs;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        list = new ArrayList<>();
-        min = Integer.MAX_VALUE;
         map = new int[N][M];
+        cctvs = new ArrayList<>();
+        ans = Integer.MAX_VALUE;
 
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < M; j++) {
                 map[i][j] = Integer.parseInt(st.nextToken());
-                if (map[i][j] != 0 && map[i][j] != 6) {
-                    list.add(new CCTV(i, j, map[i][j]));
+                if (map[i][j] == 1 || map[i][j] == 2 || map[i][j] == 3 || map[i][j] == 4 || map[i][j] == 5) {
+                    cctvs.add(new CCTV(i, j, map[i][j]));
                 }
             }
         }
-
-        dfs(0, map);
-
-        System.out.println(min);
+        countMinSpace(map, 0);
+        System.out.println(ans);
     }
 
-    private static void dfs(int cnt, int[][] map) {
-        if (cnt == list.size()) {
-            min = Math.min(min, countMap(map));
+    private static void countMinSpace(int[][] map, int cnt) {
+        if (cnt == cctvs.size()) {
+            ans = Math.min(ans, countMap(map));
             return;
         }
-
-        CCTV cctv = list.get(cnt);
-        int[][] temp;
-
-        switch (cctv.no) {
+        int[][] newMap;
+        CCTV cctv = cctvs.get(cnt);
+        switch (cctv.num) {
             case 1:
-                for (int k = 0; k < dx.length; k++) {
-                    temp = copyMap(map);
-                    checkDir(temp, cctv.x, cctv.y, k);
-                    dfs(cnt + 1, temp);
+                // →, ←, ↑, ↓
+                for (int k = 0; k < 4; k++) {
+                    newMap = copyMap(map);
+                    fillDetectArea(cctv.x, cctv.y, newMap, k);
+                    countMinSpace(newMap, cnt + 1);
                 }
                 break;
-
             case 2:
-                // ← →
-                temp = copyMap(map);
-                checkDir(temp, cctv.x, cctv.y, 2);
-                checkDir(temp, cctv.x, cctv.y, 3);
-                dfs(cnt + 1, temp);
+                // ←→, ↑↓
+                newMap = copyMap(map);
+                fillDetectArea(cctv.x, cctv.y, newMap, 0);
+                fillDetectArea(cctv.x, cctv.y, newMap, 2);
+                countMinSpace(newMap, cnt + 1);
 
-                // ↑ ↓
-                temp = copyMap(map);
-                checkDir(temp, cctv.x, cctv.y, 0);
-                checkDir(temp, cctv.x, cctv.y, 1);
-                dfs(cnt + 1, temp);
+                newMap = copyMap(map);
+                fillDetectArea(cctv.x, cctv.y, newMap, 1);
+                fillDetectArea(cctv.x, cctv.y, newMap, 3);
+                countMinSpace(newMap, cnt + 1);
                 break;
-
             case 3:
-                // ↑ →
-                temp = copyMap(map);
-                checkDir(temp, cctv.x, cctv.y, 0);
-                checkDir(temp, cctv.x, cctv.y, 3);
-                dfs(cnt + 1, temp);
+                // ↑→,↓→, ←↓, ←↑
+                newMap = copyMap(map);
+                fillDetectArea(cctv.x, cctv.y, newMap, 3);
+                fillDetectArea(cctv.x, cctv.y, newMap, 0);
+                countMinSpace(newMap, cnt + 1);
 
-                // → ↓
-                temp = copyMap(map);
-                checkDir(temp, cctv.x, cctv.y, 1);
-                checkDir(temp, cctv.x, cctv.y, 3);
-                dfs(cnt + 1, temp);
+                newMap = copyMap(map);
+                fillDetectArea(cctv.x, cctv.y, newMap, 1);
+                fillDetectArea(cctv.x, cctv.y, newMap, 0);
+                countMinSpace(newMap, cnt + 1);
 
-                // ← ↓
-                temp = copyMap(map);
-                checkDir(temp, cctv.x, cctv.y, 1);
-                checkDir(temp, cctv.x, cctv.y, 2);
-                dfs(cnt + 1, temp);
+                newMap = copyMap(map);
+                fillDetectArea(cctv.x, cctv.y, newMap, 1);
+                fillDetectArea(cctv.x, cctv.y, newMap, 2);
+                countMinSpace(newMap, cnt + 1);
 
-                // ← ↑
-                temp = copyMap(map);
-                checkDir(temp, cctv.x, cctv.y, 2);
-                checkDir(temp, cctv.x, cctv.y, 0);
-                dfs(cnt + 1, temp);
+                newMap = copyMap(map);
+                fillDetectArea(cctv.x, cctv.y, newMap, 2);
+                fillDetectArea(cctv.x, cctv.y, newMap, 3);
+                countMinSpace(newMap, cnt + 1);
                 break;
-
             case 4:
-                // ← ↑ →
-                temp = copyMap(map);
-                checkDir(temp, cctv.x, cctv.y, 0);
-                checkDir(temp, cctv.x, cctv.y, 2);
-                checkDir(temp, cctv.x, cctv.y, 3);
-                dfs(cnt + 1, temp);
+                // ←↑→, ↑→↓, ←↓→, ←↑↓
+                newMap = copyMap(map);
+                fillDetectArea(cctv.x, cctv.y, newMap, 0);
+                fillDetectArea(cctv.x, cctv.y, newMap, 2);
+                fillDetectArea(cctv.x, cctv.y, newMap, 3);
+                countMinSpace(newMap, cnt + 1);
 
-                // ↑ → ↓
-                temp = copyMap(map);
-                checkDir(temp, cctv.x, cctv.y, 0);
-                checkDir(temp, cctv.x, cctv.y, 1);
-                checkDir(temp, cctv.x, cctv.y, 3);
-                dfs(cnt + 1, temp);
+                newMap = copyMap(map);
+                fillDetectArea(cctv.x, cctv.y, newMap, 0);
+                fillDetectArea(cctv.x, cctv.y, newMap, 1);
+                fillDetectArea(cctv.x, cctv.y, newMap, 3);
+                countMinSpace(newMap, cnt + 1);
 
-                // ← ↓ →
-                temp = copyMap(map);
-                checkDir(temp, cctv.x, cctv.y, 1);
-                checkDir(temp, cctv.x, cctv.y, 2);
-                checkDir(temp, cctv.x, cctv.y, 3);
-                dfs(cnt + 1, temp);
+                newMap = copyMap(map);
+                fillDetectArea(cctv.x, cctv.y, newMap, 0);
+                fillDetectArea(cctv.x, cctv.y, newMap, 1);
+                fillDetectArea(cctv.x, cctv.y, newMap, 2);
+                countMinSpace(newMap, cnt + 1);
 
-                // ↑ ← ↓
-                temp = copyMap(map);
-                checkDir(temp, cctv.x, cctv.y, 0);
-                checkDir(temp, cctv.x, cctv.y, 1);
-                checkDir(temp, cctv.x, cctv.y, 2);
-                dfs(cnt + 1, temp);
+                newMap = copyMap(map);
+                fillDetectArea(cctv.x, cctv.y, newMap, 1);
+                fillDetectArea(cctv.x, cctv.y, newMap, 2);
+                fillDetectArea(cctv.x, cctv.y, newMap, 3);
+                countMinSpace(newMap, cnt + 1);
                 break;
-
             case 5:
-                // ← ↑ → ↓
-                temp = copyMap(map);
-                checkDir(temp, cctv.x, cctv.y, 0);
-                checkDir(temp, cctv.x, cctv.y, 1);
-                checkDir(temp, cctv.x, cctv.y, 2);
-                checkDir(temp, cctv.x, cctv.y, 3);
-                dfs(cnt + 1, temp);
+                // ←↑→↓
+                newMap = copyMap(map);
+                fillDetectArea(cctv.x, cctv.y, newMap, 0);
+                fillDetectArea(cctv.x, cctv.y, newMap, 1);
+                fillDetectArea(cctv.x, cctv.y, newMap, 2);
+                fillDetectArea(cctv.x, cctv.y, newMap, 3);
+                countMinSpace(newMap, cnt + 1);
                 break;
         }
-    }
 
-    public static void checkDir(int[][] map, int x, int y, int k) {
-        int mx = x + dx[k];
-        int my = y + dy[k];
-
-        if (mx < 0 || my < 0 || mx >= N || my >= M) return;
-        if (map[mx][my] == 6) return;
-        if (map[mx][my] == 0)
-            map[mx][my] = -1;
-        checkDir(map, mx, my, k);
-    }
-
-    private static int[][] copyMap(int[][] map) {
-        int[][] temp = new int[N][M];
-        for (int j = 0; j < N; j++) {
-            for (int k = 0; k < M; k++) {
-                temp[j][k] = map[j][k];
-            }
-        }
-        return temp;
     }
 
     private static int countMap(int[][] map) {
-        int res = 0;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (map[i][j] == 0) {
-                    res++;
+        int cnt = 0;
+        for (int[] i : map) {
+            for (int k : i) {
+                if (k == 0) {
+                    cnt++;
                 }
             }
         }
-        return res;
+        return cnt;
     }
 
-    public static class CCTV {
-        int x, y, no;
+    private static void fillDetectArea(int x, int y, int[][] map, int dir) {
+        while (true) {
+            int mx = x + dx[dir];
+            int my = y + dy[dir];
+            if (isOutRange(mx, my)) break;
+            if (map[mx][my] == 6) break;
+            x = mx;
+            y = my;
+            if (map[mx][my] != 0) {
+                continue;
+            }
+            map[mx][my] = -1;
+        }
+    }
 
-        public CCTV(int x, int y, int no) {
+    private static boolean isOutRange(int mx, int my) {
+        return mx < 0 || mx >= N || my < 0 || my >= M;
+    }
+
+    private static int[][] copyMap(int[][] map) {
+        int[][] newMap = new int[N][M];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                newMap[i][j] = map[i][j];
+            }
+        }
+        return newMap;
+    }
+
+    static class CCTV {
+        int num, x, y;
+
+        public CCTV(int x, int y, int num) {
             this.x = x;
             this.y = y;
-            this.no = no;
+            this.num = num;
         }
     }
 }
