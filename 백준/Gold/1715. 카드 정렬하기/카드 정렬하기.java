@@ -5,8 +5,8 @@ import java.util.PriorityQueue;
 
 public class Main {
 
-    static int N, ans;
-
+    static int N;
+    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
@@ -14,16 +14,14 @@ public class Main {
         for (int i = 0; i < N; i++) {
             pq.offer(Integer.parseInt(br.readLine()));
         }
-        ans = 0;
-
-        while (pq.size() >= 2) {
-            int first = pq.poll();
-            int second = pq.poll();
-            int sum = first + second;
+        int ans = 0;
+        while(pq.size() > 1){
+            int a = pq.poll();
+            int b = pq.poll();
+            int sum = a + b;
             ans += sum;
             pq.offer(sum);
         }
-
         System.out.println(ans);
     }
 }
