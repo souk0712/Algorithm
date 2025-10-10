@@ -26,7 +26,7 @@ public class Main {
         dikjstra(1);
         StringBuilder sb = new StringBuilder();
         for(int i = 2; i <= N; i++){
-            sb.append(dist[i]).append("\n");
+            sb.append(dist[i] == Integer.MAX_VALUE ? -1 : dist[i]).append("\n");
         }
         System.out.println(sb);
     }
