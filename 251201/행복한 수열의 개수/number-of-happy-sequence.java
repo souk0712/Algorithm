@@ -19,12 +19,11 @@ public class Main {
                 if(before == grid[i][j]){
                     cnt++;
                 }else{
-                    max = Math.max(max, cnt);
                     cnt = 1;
                 }
                 before = grid[i][j];
+                 max = Math.max(max, cnt);
             }
-            max = Math.max(max, cnt);
             if(max >= m){
                 ans++;
             }
@@ -37,12 +36,11 @@ public class Main {
                 if(before == grid[j][i]){
                     cnt++;
                 }else{
-                    max = Math.max(max, cnt);
                     cnt = 1;
                 }
                 before = grid[j][i];
+                max = Math.max(max, cnt);
             }
-            max = Math.max(max, cnt);
             if(max >= m){
                 ans++;
             }
