@@ -10,35 +10,33 @@ public class Main {
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
                 grid[i][j] = sc.nextInt();
+
         int ans = 0;
+
         for(int i = 0; i < n; i++){
-            int before = grid[i][0];
             int cnt = 1;
-            int max = 0;
+            int max = 1;
             for(int j = 1; j < n; j++){
-                if(before == grid[i][j]){
+                if(grid[i][j - 1] == grid[i][j]){
                     cnt++;
                 }else{
                     cnt = 1;
                 }
-                before = grid[i][j];
-                 max = Math.max(max, cnt);
+                max = Math.max(max, cnt);
             }
             if(max >= m){
                 ans++;
             }
         }
         for(int i = 0; i < n; i++){
-            int before = grid[0][i];
             int cnt = 1;
-            int max = 0;
+            int max = 1;
             for(int j = 1; j < n; j++){
-                if(before == grid[j][i]){
+                if(grid[j - 1][i] == grid[j][i]){
                     cnt++;
                 }else{
                     cnt = 1;
                 }
-                before = grid[j][i];
                 max = Math.max(max, cnt);
             }
             if(max >= m){
